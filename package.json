@@ -6,7 +6,8 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "push": "git push -u origin main && git push -u assignment main"
   },
   "dependencies": {
     "react": "^18",
