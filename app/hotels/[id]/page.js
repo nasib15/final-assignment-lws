@@ -1,4 +1,4 @@
-import BookingCard from "@/app/components/details/BookingCard";
+import BookingForm from "@/app/components/details/BookingCard";
 import HotelGallery from "@/app/components/details/HotelGallery";
 import HotelTitle from "@/app/components/details/HotelTitle";
 import PropertyDescription from "@/app/components/details/PropertyDescription";
@@ -18,7 +18,7 @@ const HotelDetailsPage = () => {
           {/* Left column */}
           <PropertyDescription />
           {/* Right column */}
-          <BookingCard />
+          <BookingForm />
         </div>
       </div>
 

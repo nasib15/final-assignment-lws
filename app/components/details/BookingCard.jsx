@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const BookingCard = () => {
+const BookingForm = () => {
   return (
     <div>
       <div className="bg-white shadow-lg rounded-xl p-6 border">
@@ -41,4 +41,4 @@ const BookingCard = () => {
     </div>
   );
 };
-export default BookingCard;
+export default BookingForm;
