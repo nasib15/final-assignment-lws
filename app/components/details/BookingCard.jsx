@@ -28,7 +28,7 @@ const BookingForm = () => {
         </div>
 
         <Link
-          href="/checkout/3"
+          href="/hotels/checkout/3"
           className="w-full block text-center bg-primary text-white py-3 rounded-lg transition-all hover:brightness-90"
         >
           Reserve
