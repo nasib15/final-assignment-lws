@@ -10,6 +10,7 @@ const HotelDetailsPage = async ({ params: { id } }) => {
   const hotelDetails = await getHotelById(id);
 
   const {
+    id: hotelId,
     name,
     location,
     descripiton,
@@ -43,7 +44,7 @@ const HotelDetailsPage = async ({ params: { id } }) => {
             totalRooms={totalRooms}
           />
           {/* Right column */}
-          <BookingForm pricePerNight={pricePerNight} />
+          <BookingForm hotelId={hotelId} pricePerNight={pricePerNight} />
         </div>
       </div>
 
@@ -68,3 +69,29 @@ const HotelDetailsPage = async ({ params: { id } }) => {
   );
 };
 export default HotelDetailsPage;
+
+// generate metadata
+
+export async function generateMetadata({ params: { id } }) {
+  const hotelDetails = await getHotelById(id);
+
+  return {
+    title: hotelDetails.name,
+    description: hotelDetails.descripiton,
+
+    openGraph: {
+      title: hotelDetails.name,
+      description: hotelDetails.descripiton,
+      type: "website",
+      url: `https://final-assignment-lws-hotelbooking.vercel.app/hotels/${id}`,
+      images: [
+        {
+          url: hotelDetails.thumbNailUrl,
+          width: 800,
+          height: 600,
+          alt: hotelDetails.name,
+        },
+      ],
+    },
+  };
+}

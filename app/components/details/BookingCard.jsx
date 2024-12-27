@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const BookingForm = ({ pricePerNight }) => {
+const BookingForm = ({ hotelId, pricePerNight }) => {
   return (
     <div>
       <div className="bg-white shadow-lg rounded-xl p-6 border">
@@ -28,7 +28,7 @@ const BookingForm = ({ pricePerNight }) => {
         </div>
 
         <Link
-          href="/hotels/checkout/3"
+          href={`/hotels/checkout/${hotelId}`}
           className="w-full block text-center bg-primary text-white py-3 rounded-lg transition-all hover:brightness-90"
         >
           Reserve

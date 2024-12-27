@@ -1,6 +1,10 @@
+import { getBlurDataURL } from "@/utils/base64";
 import Image from "next/image";
 
 const HotelGallery = ({ thumbNailUrl, gallery }) => {
+  const thumbNailBlur = getBlurDataURL(608, 500);
+
+  const galleryBlur = getBlurDataURL(296, 242);
   return (
     <div className="grid grid-cols-4 grid-rows-2 gap-4 mb-8 h-[500px]">
       <div className="col-span-2 row-span-2">
@@ -10,6 +14,8 @@ const HotelGallery = ({ thumbNailUrl, gallery }) => {
           className="w-full h-full object-cover rounded-lg"
           width={608}
           height={500}
+          placeholder="blur"
+          blurDataURL={thumbNailBlur}
         />
       </div>
       {gallery.map((image, index) => (
@@ -20,6 +26,8 @@ const HotelGallery = ({ thumbNailUrl, gallery }) => {
             className="w-full h-full object-cover rounded-lg"
             width={296}
             height={242}
+            placeholder="blur"
+            blurDataURL={galleryBlur}
           />
         </div>
       ))}

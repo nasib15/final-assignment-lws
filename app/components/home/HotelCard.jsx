@@ -1,3 +1,4 @@
+import { getBlurDataURL } from "@/utils/base64";
 import Image from "next/image";
 import Link from "next/link";
 import { StarIcon } from "../Icons/Icon";
@@ -5,6 +6,8 @@ import { StarIcon } from "../Icons/Icon";
 const HotelCard = ({ hotel }) => {
   const { id, name, location, pricePerNight, availableRooms, thumbNailUrl } =
     hotel;
+
+  const thumbNailBlur = getBlurDataURL(302, 256);
   return (
     <Link href={`/hotels/${id}`} className="block group">
       <div>
@@ -15,6 +18,8 @@ const HotelCard = ({ hotel }) => {
             className="w-full h-64 object-cover rounded-xl group-hover:scale-105 transition-transform"
             width={302}
             height={256}
+            placeholder="blur"
+            blurDataURL={thumbNailBlur}
           />
           <div className="absolute top-3 right-3 bg-white/80 px-3 py-1 rounded-full text-xs font-semibold">
             <i className="ph-bed inline-block mr-1"></i>
