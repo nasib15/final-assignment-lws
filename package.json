@@ -10,9 +10,10 @@
     "push": "git push -u origin main && git push -u assignment main"
   },
   "dependencies": {
+    "mongoose": "^8.9.2",
+    "next": "14.2.21",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.21"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "postcss": "^8",
