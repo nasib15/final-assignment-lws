@@ -4,21 +4,46 @@ import HotelTitle from "@/app/components/details/HotelTitle";
 import PropertyDescription from "@/app/components/details/PropertyDescription";
 import ReviewCard from "@/app/components/details/ReviewCard";
 import ReviewHeader from "@/app/components/details/ReviewHeader";
+import { getHotelById } from "@/db/queries";
 
-const HotelDetailsPage = () => {
+const HotelDetailsPage = async ({ params: { id } }) => {
+  const hotelDetails = await getHotelById(id);
+
+  const {
+    name,
+    location,
+    descripiton,
+    owner,
+    pricePerNight,
+    totalGuests,
+    totalBeds,
+    totalRooms,
+    thumbNailUrl,
+    gallery,
+    amenities,
+  } = hotelDetails;
+
   return (
     <>
       {/* Hotel details */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <HotelTitle />
-        <HotelGallery />
+        <HotelTitle name={name} location={location} />
+        <HotelGallery thumbNailUrl={thumbNailUrl} gallery={gallery} />
 
         {/* Property details */}
         <div className="grid grid-cols-3 gap-8">
           {/* Left column */}
-          <PropertyDescription />
+          <PropertyDescription
+            name={name}
+            amenities={amenities}
+            owner={owner}
+            descripiton={descripiton}
+            totalBeds={totalBeds}
+            totalGuests={totalGuests}
+            totalRooms={totalRooms}
+          />
           {/* Right column */}
-          <BookingForm />
+          <BookingForm pricePerNight={pricePerNight} />
         </div>
       </div>
 
