@@ -1,5 +1,5 @@
 import LoginForm from "@/app/components/auth/LoginForm";
-import { GoogleIcon } from "@/app/components/Icons/Icon";
+import SocialBtn from "@/app/components/auth/SocialBtn";
 import Link from "next/link";
 
 const LoginPage = () => {
@@ -21,10 +21,7 @@ const LoginPage = () => {
           </div>
 
           <div className="space-y-4 mb-4">
-            <button className="w-full flex items-center justify-center border border-gray-300 rounded-full py-3 hover:bg-gray-50 transition">
-              <GoogleIcon />
-              Continue with Google
-            </button>
+            <SocialBtn />
 
             <div className="flex items-center my-4">
               <div className="flex-grow border-t border-gray-300"></div>

@@ -37,7 +37,7 @@ const PaymentPage = async ({ params: { id } }) => {
           </section>
 
           <Link
-            href={`/hotels/checkout/${id}/success`}
+            href={`/hotels/${id}/success`}
             className="w-full block text-center bg-primary text-white py-3 rounded-lg mt-6 hover:brightness-90"
           >
             Request to book
