@@ -5,12 +5,23 @@ import {
   replaceMongoIdInObject,
 } from "@/utils/data-utils";
 
-export async function getAllHotels() {
+export async function getAllHotels(page = 1, limit = 8) {
   await dbConnect();
 
-  const hotels = await hotelModel?.find()?.lean();
+  // skip value
+  const skip = (page - 1) * limit;
 
-  return replaceMongoIdInArray(hotels);
+  // Total number of hotels
+  const totalHotels = await hotelModel?.countDocuments();
+
+  // Hotels for the current page
+  const hotels = await hotelModel?.find()?.skip(skip)?.limit(limit)?.lean();
+
+  return {
+    hotels: replaceMongoIdInArray(hotels),
+    totalPages: Math.ceil(totalHotels / limit),
+    currentPage: page,
+  };
 }
 
 export async function getHotelById(id) {

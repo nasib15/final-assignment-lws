@@ -2,8 +2,9 @@ import { getAllHotels } from "@/db/queries";
 import HotelCard from "./HotelCard";
 import Pagination from "./Pagination";
 
-const HotelList = async () => {
-  const hotels = await getAllHotels();
+const HotelList = async ({ searchParams }) => {
+  const page = Number(searchParams?.page) || 1;
+  const { hotels, totalPages, currentPage } = await getAllHotels(page);
 
   return (
     <>
@@ -15,7 +16,7 @@ const HotelList = async () => {
         </div>
       </section>
 
-      <Pagination />
+      <Pagination totalPages={totalPages} currentPage={currentPage} />
     </>
   );
 };

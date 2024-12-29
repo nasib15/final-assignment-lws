@@ -1,9 +1,9 @@
 import HotelList from "./components/home/HotelList";
 
-export default function Home() {
+export default function Home({ searchParams }) {
   return (
     <>
-      <HotelList />
+      <HotelList searchParams={searchParams} />
     </>
   );
 }
