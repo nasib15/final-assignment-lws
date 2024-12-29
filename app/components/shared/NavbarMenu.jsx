@@ -1,6 +1,8 @@
 "use client";
 
+import { getIconForMenuItem } from "@/utils/getItemForMenuItem";
 import { signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -74,7 +76,17 @@ const NavbarMenu = () => {
       >
         <i className="fas fa-bars"></i>
         <span className="bg-zinc-600 w-6 h-6 rounded-full flex items-center justify-center text-xs text-white">
-          <i className="fas fa-user text-white"></i>
+          {data?.user ? (
+            <Image
+              src={data?.user?.image}
+              alt="User avatar"
+              className="w-full h-full object-cover rounded-full"
+              width={24}
+              height={24}
+            />
+          ) : (
+            <i className="fas fa-user text-white"></i>
+          )}
         </span>
       </button>
 
@@ -82,35 +94,64 @@ const NavbarMenu = () => {
       {isOpen && (
         <div
           ref={menuRef}
-          className="max-w-48 w-48 bg-white shadow-sm border rounded-md absolute right-0 top-full max-h-fit mt-2 z-50 navbar-menu"
+          className="max-w-64 w-64 bg-white shadow-lg border rounded-xl absolute right-0 top-full max-h-fit mt-2 z-50 navbar-menu overflow-hidden"
         >
-          <ul>
-            {data?.user ? (
-              <>
+          {data?.user ? (
+            <>
+              {/* User Profile Section */}
+              <div className="px-4 py-3 bg-gray-50 border-b">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full overflow-hidden">
+                    <Image
+                      src={data?.user?.image}
+                      alt="User avatar"
+                      className="w-full h-full object-cover"
+                      width={40}
+                      height={40}
+                    />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-900">
+                      {data?.user?.name}
+                    </h4>
+                    <p className="text-sm text-gray-500">{data?.user?.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Menu Items */}
+              <div className="py-2">
                 {signInState.map((item) => (
                   <Link href={item.path} key={item.id}>
-                    <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4">
+                    <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-all">
+                      <i className={getIconForMenuItem(item.name)}></i>
                       {item.name}
-                    </li>
+                    </div>
                   </Link>
                 ))}
-                <li
-                  className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4 hover:cursor-pointer"
+
+                {/* Logout Button */}
+                <div
+                  className="px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-3 cursor-pointer transition-all"
                   onClick={() => signOut({ redirectTo: "/" })}
                 >
+                  <i className="fas fa-sign-out-alt"></i>
                   Logout
-                </li>
-              </>
-            ) : (
-              signOutState.map((item) => (
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="py-2">
+              {signOutState.map((item) => (
                 <Link href={item.path} key={item.id}>
-                  <li className="px-3 py-2 text-sm text-zinc-700 transition-all hover:bg-zinc-50 hover:text-zinc-800 hover:pl-4">
+                  <div className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-all">
+                    <i className={getIconForMenuItem(item.name)}></i>
                     {item.name}
-                  </li>
+                  </div>
                 </Link>
-              ))
-            )}
-          </ul>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </>
