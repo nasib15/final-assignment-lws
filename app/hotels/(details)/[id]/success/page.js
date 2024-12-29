@@ -2,6 +2,7 @@ import DownloadButton from "@/app/components/payment/DownloadButton";
 import NextSteps from "@/app/components/payment/NextSteps";
 import SuccessDetails from "@/app/components/payment/SuccessDetails";
 import SuccessMessage from "@/app/components/payment/SuccessMessage";
+import { getHotelById } from "@/db/queries";
 
 const SuccessPage = () => {
   return (
@@ -26,3 +27,14 @@ const SuccessPage = () => {
   );
 };
 export default SuccessPage;
+
+// generate metadata
+
+export async function generateMetadata({ params: { id } }) {
+  const hotelDetails = await getHotelById(id);
+
+  return {
+    title: `Success | ${hotelDetails.name}`,
+    description: `Hotel Booking App. This is a payment page. You can book your hotel now!`,
+  };
+}

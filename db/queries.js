@@ -8,7 +8,7 @@ import {
 export async function getAllHotels() {
   await dbConnect();
 
-  const hotels = await hotelModel.find().lean();
+  const hotels = await hotelModel?.find()?.lean();
 
   return replaceMongoIdInArray(hotels);
 }
@@ -16,7 +16,7 @@ export async function getAllHotels() {
 export async function getHotelById(id) {
   await dbConnect();
 
-  const hotel = await hotelModel.findById(id).lean();
+  const hotel = await hotelModel?.findById(id)?.lean();
 
   return replaceMongoIdInObject(hotel);
 }

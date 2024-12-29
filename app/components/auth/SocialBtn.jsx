@@ -5,7 +5,7 @@ import { GoogleIcon } from "../Icons/Icon";
 
 const SocialBtn = () => {
   const handleGoogleLogin = () => {
-    signIn("google", { callbackUrl: "/" });
+    signIn("google", { redirectTo: "/" });
   };
 
   return (

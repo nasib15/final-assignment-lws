@@ -4,13 +4,9 @@ import Link from "next/link";
 
 const RegisterPage = () => {
   return (
-    <section className="bg-gray-50">
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div className="bg-white rounded-xl shadow-2xl w-96 p-6 relative shadow-black/50">
-          <button className="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
-            <i className="fa-solid fa-xmark"></i>
-          </button>
-
+    <section>
+      <div className="flex items-center justify-center h-[calc(100vh-160px)]">
+        <div className="bg-white rounded-xl shadow-2xl w-96 p-6 shadow-black/50">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800">
               Register to Hotel Booking

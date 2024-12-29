@@ -1,6 +1,6 @@
 import ManageHotelCard from "@/app/components/manage-hotels/ManageHotelCard";
 
-const ManageHotelsPage = () => {
+const ManageHotelsPage = async () => {
   return (
     <div className="max-w-7xl mx-auto px-4 pb-8">
       <div className="flex justify-between items-center mb-8">
@@ -19,3 +19,9 @@ const ManageHotelsPage = () => {
   );
 };
 export default ManageHotelsPage;
+
+// generate metadata
+export const metadata = {
+  title: "Manage Hotels",
+  description: "View and manage your hotels",
+};

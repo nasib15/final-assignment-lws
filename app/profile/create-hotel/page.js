@@ -5,9 +5,9 @@ import EditHotelTitle from "@/app/components/create-hotel/EditHotelTitle";
 import EditImageGallery from "@/app/components/create-hotel/EditImageGallery";
 import HotelFeatures from "@/app/components/create-hotel/HotelFeatures";
 
-const CreateHotelPage = () => {
+const CreateHotelPage = async () => {
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8 relative">
+    <div className="max-w-6xl mx-auto px-6 py-8 relative w-full">
       <button className="px-4 py-2 bg-primary text-white rounded-lg hover:brightness-90 absolute top-4 right-4">
         <i className="fas fa-save mr-2"></i>
         Publish
@@ -37,3 +37,9 @@ const CreateHotelPage = () => {
   );
 };
 export default CreateHotelPage;
+
+// generate metadata
+export const metadata = {
+  title: "Create Hotel",
+  description: "Create your hotel and start accepting bookings",
+};

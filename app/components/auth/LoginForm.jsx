@@ -45,9 +45,7 @@ const LoginForm = () => {
         required
       />
 
-      {error && (
-        <p className="text-red-500 mt-2 text-sm text-center">{error}</p>
-      )}
+      {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
 
       <button
         type="submit"

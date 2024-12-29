@@ -1,3 +1,4 @@
+import { SessionProvider } from "next-auth/react";
 import Footer from "./components/shared/Footer";
 import Navbar from "./components/shared/Navbar";
 import "./globals.css";
@@ -19,11 +20,13 @@ export default function RootLayout({ children }) {
           referrerPolicy="no-referrer"
         />
       </head>
-      <body className={`bg-white text-black`}>
-        <Navbar />
-        {children}
-        <Footer />
-      </body>
+      <SessionProvider>
+        <body className={`bg-white text-black`}>
+          <Navbar />
+          {children}
+          <Footer />
+        </body>
+      </SessionProvider>
     </html>
   );
 }

@@ -1,8 +1,8 @@
 import BookingCard from "@/app/components/bookings/BookingCard";
 
-const MyBookingsPage = () => {
+const MyBookingsPage = async () => {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 w-full">
       <h1 className="text-3xl font-bold mb-6">My Bookings</h1>
 
       <div className="space-y-4">
@@ -29,3 +29,9 @@ const MyBookingsPage = () => {
   );
 };
 export default MyBookingsPage;
+
+// generate metadata
+export const metadata = {
+  title: "My Bookings",
+  description: "View and manage your bookings",
+};

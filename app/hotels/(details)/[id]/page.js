@@ -5,9 +5,14 @@ import PropertyDescription from "@/app/components/details/PropertyDescription";
 import ReviewCard from "@/app/components/details/ReviewCard";
 import ReviewHeader from "@/app/components/details/ReviewHeader";
 import { getHotelById } from "@/db/queries";
+import { notFound } from "next/navigation";
 
 const HotelDetailsPage = async ({ params: { id } }) => {
   const hotelDetails = await getHotelById(id);
+
+  if (!hotelDetails) {
+    notFound();
+  }
 
   const {
     id: hotelId,
