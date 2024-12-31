@@ -1,28 +1,36 @@
 import BillingForm from "@/app/components/payment/BillingForm";
 import BookingCardPic from "@/app/components/payment/BookingCardPic";
 import BookingDetails from "@/app/components/payment/BookingDetails";
+import Button from "@/app/components/payment/Button";
 import PaymentForm from "@/app/components/payment/PaymentForm";
 import PriceDetails from "@/app/components/payment/PriceDetails";
 import { getHotelById } from "@/db/queries";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
-const PaymentPage = async ({ params: { id } }) => {
+const PaymentPage = async ({ params: { id }, searchParams }) => {
   const hotelDetails = await getHotelById(id);
 
+  if (!hotelDetails) {
+    notFound();
+  }
+
   const { name, thumbNailUrl } = hotelDetails;
+  const { checkin, checkout, guests, totalPrice } = searchParams;
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
       <div className="mb-8">
-        <Link href={`/hotels/${id}`} className="text-zinc-800 hover:underline">
-          <i className="fas fa-chevron-left mr-2"></i>
-          Back
-        </Link>
+        <Button />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
-          <BookingDetails />
+          <BookingDetails
+            checkin={checkin}
+            checkout={checkout}
+            guests={guests}
+          />
 
           <section className="mb-8">
             <h2 className="text-xl font-semibold mb-4">
@@ -48,7 +56,11 @@ const PaymentPage = async ({ params: { id } }) => {
           <div className="bg-white p-6 rounded-lg shadow-sm mb-8 sticky top-0">
             <BookingCardPic name={name} thumbNailUrl={thumbNailUrl} />
 
-            <PriceDetails />
+            <PriceDetails
+              checkin={checkin}
+              checkout={checkout}
+              totalPrice={totalPrice}
+            />
           </div>
         </div>
       </div>

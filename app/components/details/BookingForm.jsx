@@ -1,6 +1,7 @@
 "use client";
 
-import { addDays, differenceInDays, format } from "date-fns";
+import addDays from "@/utils/addDays";
+import differenceInDays from "@/utils/getDifferenceInDays";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { DateRange } from "react-date-range";
@@ -22,11 +23,6 @@ const BookingForm = ({ hotelId, pricePerNight, totalGuests }) => {
   const calendarRef = useRef(null);
   const router = useRouter();
 
-  // Format dates
-  const formatDate = (date) => {
-    return format(date, "dd/MM/yyyy");
-  };
-
   // Calculate total price whenever dates or guests change
   useEffect(() => {
     const nights = differenceInDays(
@@ -35,7 +31,7 @@ const BookingForm = ({ hotelId, pricePerNight, totalGuests }) => {
     );
     const calculatedPrice = nights * pricePerNight;
     setTotalPrice(calculatedPrice);
-  }, [dateRange, pricePerNight, guests]);
+  }, [dateRange, pricePerNight]);
 
   // Close calendar when clicking outside
   useEffect(() => {
@@ -52,8 +48,8 @@ const BookingForm = ({ hotelId, pricePerNight, totalGuests }) => {
   const handleReserve = () => {
     const bookingData = {
       hotelId,
-      checkin: dateRange[0].startDate.toLocaleDateString(),
-      checkout: dateRange[0].endDate.toLocaleDateString(),
+      checkin: dateRange[0].startDate,
+      checkout: dateRange[0].endDate,
       guests,
       totalPrice,
     };
@@ -88,8 +84,23 @@ const BookingForm = ({ hotelId, pricePerNight, totalGuests }) => {
                 <div className="text-sm">
                   <div className="font-semibold mb-1">CHECK-IN - CHECKOUT</div>
                   <div>
-                    {formatDate(dateRange[0].startDate)} -{" "}
-                    {formatDate(dateRange[0].endDate)}
+                    {new Date(dateRange[0].startDate).toLocaleDateString(
+                      "en-UK",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}{" "}
+                    -{" "}
+                    {new Date(dateRange[0].endDate).toLocaleDateString(
+                      "en-UK",
+                      {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
                   </div>
                 </div>
                 <i className="fas fa-calendar"></i>
