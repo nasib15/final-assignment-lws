@@ -18,6 +18,14 @@ const bookingSchema = new Schema({
     required: true,
     type: String,
   },
+  guests: {
+    required: true,
+    type: Number,
+  },
+  totalPrice: {
+    required: true,
+    type: Number,
+  },
 });
 
 export const bookingModel =

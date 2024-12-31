@@ -1,0 +1,170 @@
+"use client";
+
+import { addDays, differenceInDays, format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+
+const BookingForm = ({ hotelId, pricePerNight, totalGuests }) => {
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 1),
+      key: "selection",
+    },
+  ]);
+
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [guests, setGuests] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(pricePerNight);
+  const calendarRef = useRef(null);
+  const router = useRouter();
+
+  // Format dates
+  const formatDate = (date) => {
+    return format(date, "dd/MM/yyyy");
+  };
+
+  // Calculate total price whenever dates or guests change
+  useEffect(() => {
+    const nights = differenceInDays(
+      dateRange[0].endDate,
+      dateRange[0].startDate
+    );
+    const calculatedPrice = nights * pricePerNight;
+    setTotalPrice(calculatedPrice);
+  }, [dateRange, pricePerNight, guests]);
+
+  // Close calendar when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setShowCalendar(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleReserve = () => {
+    const bookingData = {
+      hotelId,
+      checkin: dateRange[0].startDate.toLocaleDateString(),
+      checkout: dateRange[0].endDate.toLocaleDateString(),
+      guests,
+      totalPrice,
+    };
+
+    router.push(
+      `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.totalPrice}`
+    );
+  };
+
+  return (
+    <div className="sticky top-24">
+      <div className="bg-white shadow-lg rounded-xl p-6 border">
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <span className="text-xl font-bold">${pricePerNight}</span>
+            <span className="text-gray-600 ml-1">per night</span>
+          </div>
+          <div className="flex items-center">
+            <i className="fas fa-star text-yellow-500 mr-1"></i>
+            <span>5</span>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {/* Date Selection */}
+          <div className="relative" ref={calendarRef}>
+            <div
+              className="border rounded-lg p-3 cursor-pointer"
+              onClick={() => setShowCalendar(!showCalendar)}
+            >
+              <div className="flex justify-between items-center">
+                <div className="text-sm">
+                  <div className="font-semibold mb-1">CHECK-IN - CHECKOUT</div>
+                  <div>
+                    {formatDate(dateRange[0].startDate)} -{" "}
+                    {formatDate(dateRange[0].endDate)}
+                  </div>
+                </div>
+                <i className="fas fa-calendar"></i>
+              </div>
+            </div>
+
+            {showCalendar && (
+              <div className="absolute z-50 mt-2">
+                <DateRange
+                  ranges={dateRange}
+                  onChange={(item) => setDateRange([item.selection])}
+                  months={1}
+                  direction="horizontal"
+                  minDate={new Date()}
+                  className="border rounded-lg shadow-lg"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Guests Selection */}
+          <div className="border rounded-lg p-3">
+            <div className="font-semibold mb-1 text-sm">GUESTS</div>
+            <div className="flex justify-between items-center">
+              <span>{guests} guest(s)</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setGuests((prev) => Math.max(1, prev - 1))}
+                  disabled={guests === 1}
+                  className="p-1 px-3 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  -
+                </button>
+                <span>{guests}</span>
+                <button
+                  onClick={() => setGuests((prev) => prev + 1)}
+                  disabled={guests === totalGuests}
+                  className="p-1 px-3 border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Price Summary */}
+          <div className="border-t pt-4">
+            <div className="flex justify-between mb-2">
+              <span>
+                ${pricePerNight} x{" "}
+                {differenceInDays(dateRange[0].endDate, dateRange[0].startDate)}{" "}
+                nights
+              </span>
+              <span>${totalPrice}</span>
+            </div>
+            <div className="flex justify-between font-bold">
+              <span>Total</span>
+              <span>${totalPrice}</span>
+            </div>
+          </div>
+
+          {/* Reserve Button */}
+          <button
+            onClick={handleReserve}
+            className="w-full block text-center bg-primary text-white py-3 rounded-lg transition-all hover:brightness-90"
+          >
+            Reserve
+          </button>
+
+          <div className="text-center text-sm text-gray-500">
+            You won&lsquo;t be charged yet
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+export default BookingForm;

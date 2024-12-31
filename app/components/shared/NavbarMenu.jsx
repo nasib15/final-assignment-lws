@@ -101,11 +101,11 @@ const NavbarMenu = () => {
               {/* User Profile Section */}
               <div className="px-4 py-3 bg-gray-50 border-b">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full overflow-hidden">
+                  <div className="rounded-full overflow-hidden">
                     <Image
                       src={data?.user?.image}
                       alt="User avatar"
-                      className="w-full h-full object-cover"
+                      className="object-cover"
                       width={40}
                       height={40}
                     />

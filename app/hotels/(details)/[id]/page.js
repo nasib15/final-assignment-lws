@@ -1,4 +1,4 @@
-import BookingForm from "@/app/components/details/BookingCard";
+import BookingForm from "@/app/components/details/BookingForm";
 import HotelGallery from "@/app/components/details/HotelGallery";
 import HotelTitle from "@/app/components/details/HotelTitle";
 import PropertyDescription from "@/app/components/details/PropertyDescription";
@@ -49,7 +49,11 @@ const HotelDetailsPage = async ({ params: { id } }) => {
             totalRooms={totalRooms}
           />
           {/* Right column */}
-          <BookingForm hotelId={hotelId} pricePerNight={pricePerNight} />
+          <BookingForm
+            hotelId={hotelId}
+            pricePerNight={pricePerNight}
+            totalGuests={totalGuests}
+          />
         </div>
       </div>
 
