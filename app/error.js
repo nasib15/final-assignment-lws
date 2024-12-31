@@ -4,7 +4,7 @@ import { ErrorIcon, TryAgainIcon } from "./components/Icons/Icon";
 
 export default function Error({ error, reset }) {
   return (
-    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center bg-gray-50 p-4">
+    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center p-4">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
         {/* Error Icon */}
         <div className="flex justify-center">

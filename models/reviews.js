@@ -18,6 +18,10 @@ const reviewSchema = new Schema({
     required: true,
     type: String,
   },
+  reviewDate: {
+    default: Date.now,
+    type: Date,
+  },
 });
 
 export const reviewModel =

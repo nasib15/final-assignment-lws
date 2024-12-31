@@ -4,11 +4,20 @@ import HotelTitle from "@/app/components/details/HotelTitle";
 import PropertyDescription from "@/app/components/details/PropertyDescription";
 import ReviewCard from "@/app/components/details/ReviewCard";
 import ReviewHeader from "@/app/components/details/ReviewHeader";
-import { getHotelById } from "@/db/queries";
+import { auth } from "@/auth";
+import {
+  getHotelById,
+  getReviewsByHotelId,
+  getUserByEmail,
+} from "@/db/queries";
 import { notFound } from "next/navigation";
 
 const HotelDetailsPage = async ({ params: { id } }) => {
   const hotelDetails = await getHotelById(id);
+  const { user } = await auth();
+  const userId = await getUserByEmail(user.email);
+
+  const reviewDetails = await getReviewsByHotelId(id);
 
   if (!hotelDetails) {
     notFound();
@@ -33,7 +42,11 @@ const HotelDetailsPage = async ({ params: { id } }) => {
     <>
       {/* Hotel details */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <HotelTitle name={name} location={location} />
+        <HotelTitle
+          reviewDetails={reviewDetails}
+          name={name}
+          location={location}
+        />
         <HotelGallery thumbNailUrl={thumbNailUrl} gallery={gallery} />
 
         {/* Property details */}
@@ -59,20 +72,23 @@ const HotelDetailsPage = async ({ params: { id } }) => {
 
       {/* Ratings */}
       <div className="max-w-7xl mx-auto px-6 py-12 border-t">
-        <ReviewHeader />
+        <ReviewHeader
+          reviewDetails={reviewDetails}
+          hotelId={hotelId}
+          userId={userId}
+        />
 
         {/* Review grid */}
         <div className="grid grid-cols-2 gap-8">
-          <ReviewCard />
-          <ReviewCard />
+          {reviewDetails.map((review) => (
+            <ReviewCard key={review.id} review={review} user={user} />
+          ))}
         </div>
 
-        {/* <ReviewModal /> */}
-
         {/* Show more btn */}
-        <button className="px-4 py-2 border border-gray-900 rounded-lg hover:bg-gray-100 mt-8">
+        {/* <button className="px-4 py-2 border border-gray-900 rounded-lg hover:bg-gray-100 mt-8">
           Show More
-        </button>
+        </button> */}
       </div>
     </>
   );

@@ -1,10 +1,13 @@
 import dbConnect from "@/lib/dbConnect";
 import { hotelModel } from "@/models/hotels";
+import { reviewModel } from "@/models/reviews";
+import { userModel } from "@/models/users";
 import {
   replaceMongoIdInArray,
   replaceMongoIdInObject,
 } from "@/utils/data-utils";
 
+// get all hotels for the current page with pagination
 export async function getAllHotels(page = 1, limit = 8) {
   await dbConnect();
 
@@ -24,10 +27,31 @@ export async function getAllHotels(page = 1, limit = 8) {
   };
 }
 
+// get hotel by id
 export async function getHotelById(id) {
   await dbConnect();
 
   const hotel = await hotelModel?.findById(id)?.lean();
 
   return replaceMongoIdInObject(hotel);
+}
+
+// get user id by email
+export async function getUserByEmail(email) {
+  await dbConnect();
+
+  const user = await userModel?.findOne({ email }).lean();
+
+  const userDetails = replaceMongoIdInObject(user);
+
+  return userDetails.id;
+}
+
+// get reviews by hotel id
+export async function getReviewsByHotelId(hotelId) {
+  await dbConnect();
+
+  const reviews = await reviewModel?.find({ hotelId })?.lean();
+
+  return replaceMongoIdInArray(reviews);
 }
