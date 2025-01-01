@@ -9,15 +9,27 @@ import {
   getHotelById,
   getReviewsByHotelId,
   getUserByEmail,
+  getUserReview,
 } from "@/db/queries";
 import { notFound } from "next/navigation";
 
 const HotelDetailsPage = async ({ params: { id } }) => {
   const hotelDetails = await getHotelById(id);
-  const { user } = await auth();
-  const userId = await getUserByEmail(user.email);
 
+  // get authenticated user details
+  const { user: authUser } = await auth();
+  const authUserId = await getUserByEmail(authUser.email);
+
+  // get review details
   const reviewDetails = await getReviewsByHotelId(id);
+
+  // get review user
+  const userReview = await getUserReview(id, authUserId);
+
+  // check if the user is the owner of the hotel
+  const isOwner =
+    authUser?.name?.toLowerCase()?.trim() ===
+    hotelDetails?.owner?.toLowerCase()?.trim();
 
   if (!hotelDetails) {
     notFound();
@@ -66,6 +78,7 @@ const HotelDetailsPage = async ({ params: { id } }) => {
             hotelId={hotelId}
             pricePerNight={pricePerNight}
             totalGuests={totalGuests}
+            reviewDetails={reviewDetails}
           />
         </div>
       </div>
@@ -75,13 +88,19 @@ const HotelDetailsPage = async ({ params: { id } }) => {
         <ReviewHeader
           reviewDetails={reviewDetails}
           hotelId={hotelId}
-          userId={userId}
+          authUserId={authUserId}
+          userReview={userReview}
+          isOwner={isOwner}
         />
 
         {/* Review grid */}
         <div className="grid grid-cols-2 gap-8">
           {reviewDetails.map((review) => (
-            <ReviewCard key={review.id} review={review} user={user} />
+            <ReviewCard
+              key={review.id}
+              review={review}
+              authUserId={authUserId}
+            />
           ))}
         </div>
 

@@ -3,7 +3,7 @@
 import { addReview } from "@/app/actions/review";
 import { useState } from "react";
 
-const ReviewModal = ({ onClose, hotelId, userId }) => {
+const ReviewModal = ({ onClose, hotelId, authUserId }) => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [review, setReview] = useState("");
@@ -15,7 +15,7 @@ const ReviewModal = ({ onClose, hotelId, userId }) => {
       const reviewData = {
         ratings: rating,
         review,
-        userId,
+        userId: authUserId,
         hotelId,
       };
 

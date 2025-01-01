@@ -1,7 +1,7 @@
+import { getAvgRating } from "@/utils/getAvgRating";
+
 const HotelTitle = ({ reviewDetails, name, location }) => {
-  const averageRating =
-    reviewDetails?.reduce((acc, review) => acc + review.ratings, 0) /
-      (reviewDetails?.length || 0) || 0;
+  const averageRating = getAvgRating(reviewDetails);
 
   return (
     <div className="mb-6">

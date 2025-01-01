@@ -1,6 +1,7 @@
 "use client";
 
 import addDays from "@/utils/addDays";
+import { getAvgRating } from "@/utils/getAvgRating";
 import differenceInDays from "@/utils/getDifferenceInDays";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -8,7 +9,12 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
-const BookingForm = ({ hotelId, pricePerNight, totalGuests }) => {
+const BookingForm = ({
+  hotelId,
+  pricePerNight,
+  totalGuests,
+  reviewDetails,
+}) => {
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -22,6 +28,7 @@ const BookingForm = ({ hotelId, pricePerNight, totalGuests }) => {
   const [totalPrice, setTotalPrice] = useState(pricePerNight);
   const calendarRef = useRef(null);
   const router = useRouter();
+  const avgRating = getAvgRating(reviewDetails);
 
   // Calculate total price whenever dates or guests change
   useEffect(() => {
@@ -69,7 +76,7 @@ const BookingForm = ({ hotelId, pricePerNight, totalGuests }) => {
           </div>
           <div className="flex items-center">
             <i className="fas fa-star text-yellow-500 mr-1"></i>
-            <span>5</span>
+            <span>{avgRating.toFixed(1)}</span>
           </div>
         </div>
 

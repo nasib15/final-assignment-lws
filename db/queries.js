@@ -47,6 +47,15 @@ export async function getUserByEmail(email) {
   return userDetails.id;
 }
 
+// get user by id
+export async function getUserById(id) {
+  await dbConnect();
+
+  const user = await userModel?.findById(id)?.lean();
+
+  return replaceMongoIdInObject(user);
+}
+
 // get reviews by hotel id
 export async function getReviewsByHotelId(hotelId) {
   await dbConnect();
@@ -54,4 +63,17 @@ export async function getReviewsByHotelId(hotelId) {
   const reviews = await reviewModel?.find({ hotelId })?.lean();
 
   return replaceMongoIdInArray(reviews);
+}
+
+// get user review on a particular hotel
+export async function getUserReview(hotelId, userId) {
+  await dbConnect();
+
+  const review = await reviewModel?.findOne({ hotelId, userId })?.lean();
+
+  if (!review) {
+    return null;
+  }
+
+  return replaceMongoIdInObject(review);
 }

@@ -10,7 +10,7 @@ const PropertyDescription = ({
   const amenityIcons = {
     "Beach access": "fa-solid fa-umbrella-beach",
     "Free Wi-Fi": "fa-solid fa-wifi",
-    "Free parking": "fa-solid fa-square-parking",
+    "Free Parking": "fa-solid fa-square-parking",
     "Fitness Center": "fa-solid fa-dumbbell",
     "Private pool": "fa-solid fa-person-swimming",
     Kitchen: "fa-solid fa-sink",
