@@ -3,7 +3,7 @@
 import dbConnect from "@/lib/dbConnect";
 import { paymentModel } from "@/models/payment";
 
-export async function addPayment(userId, hotelId, paymentInfo) {
+export async function addPayment(userId, hotelId, paymentInfo, bookingId) {
   await dbConnect();
 
   const paymentData = {
@@ -18,12 +18,11 @@ export async function addPayment(userId, hotelId, paymentInfo) {
     city: paymentInfo.city,
     state: paymentInfo.state,
     zipCode: Number(paymentInfo.zipCode),
+    bookingId,
   };
 
   try {
-    const payment = await paymentModel.create(paymentData);
-
-    console.log(payment);
+    await paymentModel.create(paymentData);
 
     return {
       success: true,

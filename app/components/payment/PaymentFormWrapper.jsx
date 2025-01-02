@@ -1,5 +1,6 @@
 "use client";
 
+import { findBookingId } from "@/app/actions/booking";
 import { addPayment } from "@/app/actions/payment";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -68,9 +69,21 @@ const PaymentFormWrapper = ({
       return;
     }
 
+    // get booking id
+    const bookingId = await findBookingId(
+      hotelId,
+      authUserId,
+      checkin,
+      checkout
+    );
+
     try {
-      console.log(formData);
-      const response = await addPayment(authUserId, hotelId, formData);
+      const response = await addPayment(
+        authUserId,
+        hotelId,
+        formData,
+        bookingId
+      );
 
       if (response.success) {
         alert(response.message);
@@ -88,7 +101,9 @@ const PaymentFormWrapper = ({
         setIsSubmitting(false);
 
         router.push(
-          `/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${totalPrice}`
+          `/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${
+            totalPrice + 51.31 + 17.5
+          }`
         );
       }
     } catch (error) {

@@ -10,6 +10,10 @@ const paymentSchema = new Schema({
     required: true,
     type: ObjectId,
   },
+  bookingId: {
+    required: true,
+    type: ObjectId,
+  },
   totalPrice: {
     required: true,
     type: Number,

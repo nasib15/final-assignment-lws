@@ -10,10 +10,6 @@ const bookingSchema = new Schema({
     required: true,
     type: ObjectId,
   },
-  bookingId: {
-    required: true,
-    type: String,
-  },
   checkin: {
     required: true,
     type: String,

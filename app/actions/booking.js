@@ -1,5 +1,6 @@
 "use server";
 
+import { getOneBookingDetails } from "@/db/queries";
 import dbConnect from "@/lib/dbConnect";
 import { bookingModel } from "@/models/bookings";
 
@@ -16,4 +17,10 @@ export async function addBooking(bookingData) {
   } catch (error) {
     throw new Error(error.message);
   }
+}
+
+// find booking id
+export async function findBookingId(hotelId, userId, checkin, checkout) {
+  const res = await getOneBookingDetails(hotelId, userId, checkin, checkout);
+  return res.id;
 }

@@ -2,7 +2,6 @@
 
 import { addBooking } from "@/app/actions/booking";
 import addDays from "@/utils/addDays";
-import { generateBookingId } from "@/utils/generateBookingId";
 import { getAvgRating } from "@/utils/getAvgRating";
 import differenceInDays from "@/utils/getDifferenceInDays";
 import { useRouter } from "next/navigation";
@@ -59,16 +58,10 @@ const BookingForm = ({
     const bookingData = {
       hotelId,
       userId: authUserId,
-      checkin: dateRange[0].startDate,
-      checkout: dateRange[0].endDate,
+      checkin: new Date(dateRange[0].startDate).toISOString(),
+      checkout: new Date(dateRange[0].endDate).toISOString(),
       guests,
       bookingPrice: totalPrice,
-      bookingId: generateBookingId({
-        prefix: "HOTEL",
-        includeDate: true,
-        randomLength: 8,
-        separator: "-",
-      }),
     };
 
     const response = await addBooking(bookingData);
