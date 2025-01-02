@@ -26,6 +26,10 @@ const bookingSchema = new Schema({
     required: true,
     type: Number,
   },
+  bookedAt: {
+    default: Date.now,
+    type: Date,
+  },
 });
 
 export const bookingModel =

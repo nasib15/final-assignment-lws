@@ -1,7 +1,7 @@
 import { getBlurDataURL } from "@/utils/base64";
 import Image from "next/image";
 
-const BookingCardPic = ({ name, thumbNailUrl }) => {
+const BookingCardPic = ({ name, thumbNailUrl, totalReviews, avgRating }) => {
   const thumbNailBlur = getBlurDataURL(96, 96);
 
   return (
@@ -19,7 +19,9 @@ const BookingCardPic = ({ name, thumbNailUrl }) => {
         <p className="text-sm">{name}</p>
         <div className="flex items-center">
           <i className="fas fa-star text-sm mr-1"></i>
-          <span className="text-xs mt-1 text-zinc-500">5.00 (3 Reviews)</span>
+          <span className="text-xs mt-1 text-zinc-500">
+            {avgRating.toFixed(1)} ({totalReviews} Reviews)
+          </span>
         </div>
       </div>
     </div>
