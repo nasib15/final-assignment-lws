@@ -23,6 +23,7 @@ const PaymentFormWrapper = ({
     city: "",
     state: "",
     zipCode: "",
+    totalPrice: Number(totalPrice) + 51.31 + 17.5,
   });
 
   const [errors, setErrors] = useState({});
@@ -68,6 +69,7 @@ const PaymentFormWrapper = ({
     }
 
     try {
+      console.log(formData);
       const response = await addPayment(authUserId, hotelId, formData);
 
       if (response.success) {

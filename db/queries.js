@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import { hotelModel } from "@/models/hotels";
+import { paymentModel } from "@/models/payment";
 import { reviewModel } from "@/models/reviews";
 import { userModel } from "@/models/users";
 import {
@@ -76,4 +77,14 @@ export async function getUserReview(hotelId, userId) {
   }
 
   return replaceMongoIdInObject(review);
+}
+
+// get all payment infos
+
+export async function getAllPaymentInfos() {
+  await dbConnect();
+
+  const paymentInfos = await paymentModel?.find()?.lean();
+
+  return replaceMongoIdInArray(paymentInfos);
 }

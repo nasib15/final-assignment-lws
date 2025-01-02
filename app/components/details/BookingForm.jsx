@@ -1,6 +1,8 @@
 "use client";
 
+import { addBooking } from "@/app/actions/booking";
 import addDays from "@/utils/addDays";
+import { generateBookingId } from "@/utils/generateBookingId";
 import { getAvgRating } from "@/utils/getAvgRating";
 import differenceInDays from "@/utils/getDifferenceInDays";
 import { useRouter } from "next/navigation";
@@ -14,6 +16,7 @@ const BookingForm = ({
   pricePerNight,
   totalGuests,
   reviewDetails,
+  authUserId,
 }) => {
   const [dateRange, setDateRange] = useState([
     {
@@ -52,18 +55,30 @@ const BookingForm = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleReserve = () => {
+  const handleReserve = async () => {
     const bookingData = {
       hotelId,
+      userId: authUserId,
       checkin: dateRange[0].startDate,
       checkout: dateRange[0].endDate,
       guests,
-      totalPrice,
+      bookingPrice: totalPrice,
+      bookingId: generateBookingId({
+        prefix: "HOTEL",
+        includeDate: true,
+        randomLength: 8,
+        separator: "-",
+      }),
     };
 
-    router.push(
-      `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.totalPrice}`
-    );
+    const response = await addBooking(bookingData);
+
+    if (response.success) {
+      alert("Booking added successfully");
+      router.push(
+        `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.bookingPrice}`
+      );
+    }
   };
 
   return (

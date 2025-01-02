@@ -10,6 +10,10 @@ const paymentSchema = new Schema({
     required: true,
     type: ObjectId,
   },
+  totalPrice: {
+    required: true,
+    type: Number,
+  },
   cardNumber: {
     required: true,
     type: Number,
@@ -27,7 +31,7 @@ const paymentSchema = new Schema({
     type: String,
   },
   aptNumber: {
-    required: true,
+    required: false,
     type: Number,
   },
   city: {

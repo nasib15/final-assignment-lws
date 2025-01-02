@@ -4,7 +4,7 @@ import SuccessDetails from "@/app/components/payment/SuccessDetails";
 import SuccessMessage from "@/app/components/payment/SuccessMessage";
 import { getHotelById } from "@/db/queries";
 
-const SuccessPage = () => {
+const SuccessPage = async () => {
   return (
     <section className="bg-gray-50">
       <div className="max-w-3xl mx-auto p-6">

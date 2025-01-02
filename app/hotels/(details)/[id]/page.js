@@ -79,6 +79,7 @@ const HotelDetailsPage = async ({ params: { id } }) => {
             pricePerNight={pricePerNight}
             totalGuests={totalGuests}
             reviewDetails={reviewDetails}
+            authUserId={authUserId}
           />
         </div>
       </div>
