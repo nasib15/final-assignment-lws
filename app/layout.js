@@ -8,7 +8,7 @@ export const metadata = {
   description: "Hotel Booking App. Book your hotel now!",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children, modal }) {
   return (
     <html lang="en">
       <head>
@@ -23,6 +23,7 @@ export default function RootLayout({ children }) {
       <SessionProvider>
         <body className={`bg-white text-black`}>
           <Navbar />
+          {modal}
           {children}
           <Footer />
         </body>
