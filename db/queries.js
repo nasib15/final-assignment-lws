@@ -10,17 +10,23 @@ import {
 } from "@/utils/data-utils";
 
 // get all hotels for the current page with pagination
-export async function getAllHotels(page = 1, limit = 8) {
+export async function getAllHotels(page = 1, query, limit = 8) {
   await dbConnect();
 
   // skip value
   const skip = (page - 1) * limit;
 
-  // Total number of hotels
-  const totalHotels = await hotelModel?.countDocuments();
-
   // Hotels for the current page
-  const hotels = await hotelModel?.find()?.skip(skip)?.limit(limit)?.lean();
+  const hotels = await hotelModel
+    ?.find({ name: { $regex: query, $options: "i" } })
+    ?.skip(skip)
+    ?.limit(limit)
+    ?.lean();
+
+  // Total number of hotels
+  const totalHotels = await hotelModel
+    ?.find({ name: { $regex: query, $options: "i" } })
+    ?.countDocuments();
 
   return {
     hotels: replaceMongoIdInArray(hotels),

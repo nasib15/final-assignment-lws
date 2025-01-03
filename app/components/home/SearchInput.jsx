@@ -8,26 +8,19 @@ const SearchInput = () => {
   const searchParams = useSearchParams();
 
   const doSearch = useDebounce((term) => {
-    const params = new URLSearchParams(searchParams);
     if (term) {
-      params.set("query", term);
-      router.replace(`?${params.toString()}`);
+      router.replace(`/?page=1&query=${encodeURIComponent(term)}`);
     } else {
-      params.delete("query");
-      router.replace("/");
+      router.replace("?page=1");
     }
   }, 500);
-
-  const handleSearch = (term) => {
-    doSearch(term);
-  };
 
   return (
     <input
       type="text"
       placeholder="Where to?"
       defaultValue={searchParams.get("query")?.toString()}
-      onChange={(e) => handleSearch(e.target.value)}
+      onChange={(e) => doSearch(e.target.value)}
       className="w-full bg-transparent focus:outline-none placeholder:text-sm"
     />
   );
