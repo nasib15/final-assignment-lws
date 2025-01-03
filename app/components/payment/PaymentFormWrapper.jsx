@@ -2,6 +2,8 @@
 
 import { findBookingId } from "@/app/actions/booking";
 import { addPayment } from "@/app/actions/payment";
+import { generateBookingPDF } from "@/utils/generatePDF";
+import differenceInDays from "@/utils/getDifferenceInDays";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { InfoIcon } from "../Icons/Icon";
@@ -14,6 +16,8 @@ const PaymentFormWrapper = ({
   checkout,
   guests,
   totalPrice,
+  authUser,
+  hotelDetails,
 }) => {
   const [formData, setFormData] = useState({
     cardNumber: "",
@@ -40,6 +44,7 @@ const PaymentFormWrapper = ({
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -78,6 +83,7 @@ const PaymentFormWrapper = ({
     );
 
     try {
+      // Add payment
       const response = await addPayment(
         authUserId,
         hotelId,
@@ -86,7 +92,56 @@ const PaymentFormWrapper = ({
       );
 
       if (response.success) {
-        alert(response.message);
+        // booking data
+        const bookingData = {
+          guestName: authUser.name,
+          guestEmail: authUser.email,
+          hotelName: hotelDetails.name,
+          hotelLocation: hotelDetails.location,
+          hotelAddress: `${hotelDetails.location}, 42028`,
+          hotelPhone: "+1 234 567 8900",
+          hotelEmail: `contact@${hotelDetails.name
+            .split(" ")
+            .join("_")
+            .toLowerCase()}.com`,
+          checkin,
+          checkout,
+          nights: differenceInDays(new Date(checkout), new Date(checkin)),
+          guests: Number(guests),
+          pricePerNight: Number(hotelDetails.pricePerNight),
+          totalPrice: Number(formData.totalPrice),
+          bookingId,
+          billingAddress: {
+            streetAddress: formData.streetAddress,
+            aptNumber: formData.aptNumber,
+            city: formData.city,
+            state: formData.state,
+            zipCode: formData.zipCode,
+          },
+        };
+
+        // Generate PDF
+        const pdfBlob = await generateBookingPDF(bookingData);
+        const pdfBuffer = await pdfBlob.arrayBuffer();
+
+        // Send confirmation email
+        const emailResponse = await fetch("/api/email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bookingData,
+            // eslint-disable-next-line no-undef
+            pdfBuffer: Array.from(new Uint8Array(pdfBuffer)),
+          }),
+        });
+
+        if (!emailResponse.ok) {
+          console.error("Failed to send email");
+        }
+
+        // Reset form
         setFormData({
           cardNumber: "",
           expiration: "",

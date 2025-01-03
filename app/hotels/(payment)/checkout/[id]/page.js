@@ -49,6 +49,8 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
             checkout={checkout}
             guests={guests}
             totalPrice={totalPrice}
+            authUser={authUser}
+            hotelDetails={hotelDetails}
           />
         </div>
 
