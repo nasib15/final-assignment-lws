@@ -102,7 +102,7 @@ const PaymentFormWrapper = ({
 
         router.push(
           `/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${
-            totalPrice + 51.31 + 17.5
+            Number(totalPrice) + 51.31 + 17.5
           }`
         );
       }

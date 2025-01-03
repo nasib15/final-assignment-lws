@@ -4,7 +4,8 @@ import NextSteps from "@/app/components/payment/NextSteps";
 import SuccessDetails from "@/app/components/payment/SuccessDetails";
 import SuccessMessage from "@/app/components/payment/SuccessMessage";
 import { auth } from "@/auth";
-import { getHotelById, getUserByEmail } from "@/db/queries";
+import { getHotelById, getPaymentDetails, getUserByEmail } from "@/db/queries";
+import differenceInDays from "@/utils/getDifferenceInDays";
 import { notFound } from "next/navigation";
 
 const SuccessPage = async ({ params: { id }, searchParams }) => {
@@ -16,9 +17,38 @@ const SuccessPage = async ({ params: { id }, searchParams }) => {
 
   const bookingId = await findBookingId(id, authUserId, checkin, checkout);
 
+  const paymentDetails = await getPaymentDetails(bookingId);
+
   if (!hotelDetails) {
     notFound();
   }
+
+  const bookingData = {
+    guestName: authUser.name,
+    guestEmail: authUser.email,
+    hotelName: hotelDetails.name,
+    hotelLocation: hotelDetails.location,
+    hotelAddress: `${hotelDetails.location}, 42028`,
+    hotelPhone: "+1 234 567 8900",
+    hotelEmail: `contact@${hotelDetails.name
+      .split(" ")
+      .join("_")
+      .toLowerCase()}.com`,
+    checkin,
+    checkout,
+    nights: differenceInDays(new Date(checkout), new Date(checkin)),
+    guests: Number(guests),
+    pricePerNight: Number(hotelDetails.pricePerNight),
+    totalPrice: Number(searchParams.totalPrice),
+    bookingId,
+    billingAddress: {
+      streetAddress: paymentDetails.streetAddress,
+      aptNumber: paymentDetails.aptNumber,
+      city: paymentDetails.city,
+      state: paymentDetails.state,
+      zipCode: paymentDetails.zipCode,
+    },
+  };
 
   return (
     <section className="bg-gray-50">
@@ -35,7 +65,7 @@ const SuccessPage = async ({ params: { id }, searchParams }) => {
 
         <NextSteps />
 
-        <DownloadButton />
+        <DownloadButton bookingData={bookingData} />
 
         <div className="mt-12 text-center">
           <p className="text-zinc-600">Need help with your booking?</p>
