@@ -13,12 +13,11 @@ const ReviewCard = async ({ review, authUserId }) => {
   } = review;
 
   // Check if the review belongs to the current user
-  const isMyReview = reviewUserId.toString() === authUserId.toString();
+  const isMyReview = reviewUserId?.toString() === authUserId?.toString();
 
   // Get user images
-  const { name: reviewUserName, image: reviewUserImage } = await getUserById(
-    reviewUserId
-  );
+  const { name: reviewUserName, image: reviewUserImage } =
+    await getUserById(reviewUserId);
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow relative group">

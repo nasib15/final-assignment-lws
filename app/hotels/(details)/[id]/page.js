@@ -11,25 +11,28 @@ import {
   getUserByEmail,
   getUserReview,
 } from "@/db/queries";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 const HotelDetailsPage = async ({ params: { id } }) => {
   const hotelDetails = await getHotelById(id);
 
   // get authenticated user details
-  const { user: authUser } = await auth();
-  const authUserId = await getUserByEmail(authUser.email);
+  const authSession = await auth();
+  const authUser = authSession?.user;
+  const authUserId = authUser ? await getUserByEmail(authUser?.email) : null;
 
   // get review details
   const reviewDetails = await getReviewsByHotelId(id);
 
   // get review user
-  const userReview = await getUserReview(id, authUserId);
+  const userReview = authUserId ? await getUserReview(id, authUserId) : null;
 
   // check if the user is the owner of the hotel
-  const isOwner =
-    authUser?.name?.toLowerCase()?.trim() ===
-    hotelDetails?.owner?.toLowerCase()?.trim();
+  const isOwner = authUser
+    ? authUser?.name?.toLowerCase()?.trim() ===
+      hotelDetails?.owner?.toLowerCase()?.trim()
+    : false;
 
   if (!hotelDetails) {
     notFound();
@@ -74,13 +77,36 @@ const HotelDetailsPage = async ({ params: { id } }) => {
             totalRooms={totalRooms}
           />
           {/* Right column */}
-          <BookingForm
-            hotelId={hotelId}
-            pricePerNight={pricePerNight}
-            totalGuests={totalGuests}
-            reviewDetails={reviewDetails}
-            authUserId={authUserId}
-          />
+          {authUserId ? (
+            <BookingForm
+              hotelId={hotelId}
+              pricePerNight={pricePerNight}
+              totalGuests={totalGuests}
+              reviewDetails={reviewDetails}
+              authUserId={authUserId}
+            />
+          ) : (
+            <div className="col-span-1">
+              <div>
+                <div className="bg-white shadow-lg rounded-xl p-6 border">
+                  <div className="text-center">
+                    <h3 className="font-semibold mb-2">
+                      Want to book this hotel?
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Please log in to make a reservation
+                    </p>
+                    <Link
+                      href="/login"
+                      className="block w-full py-3 px-4 bg-primary text-white rounded-lg hover:brightness-90 text-center"
+                    >
+                      Log in to Book
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

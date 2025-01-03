@@ -1,5 +1,6 @@
 "use client";
 import { getAvgRating } from "@/utils/getAvgRating";
+import Link from "next/link";
 import { useState } from "react";
 import ReviewModal from "./ReviewModal";
 
@@ -31,23 +32,32 @@ const ReviewHeader = ({
           </div>
         </div>
 
-        {!userReview && !isOwner && (
-          <button
+        {authUserId ? (
+          !userReview &&
+          !isOwner && (
+            <button
+              className="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/80"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Write a Review
+            </button>
+          )
+        ) : (
+          <Link
+            href="/login"
             className="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/80"
-            onClick={() => setIsModalOpen(true)}
           >
-            Write a Review
-          </button>
+            Login to Review
+          </Link>
+        )}
+        {isModalOpen && (
+          <ReviewModal
+            hotelId={hotelId}
+            authUserId={authUserId}
+            onClose={() => setIsModalOpen(false)}
+          />
         )}
       </div>
-
-      {isModalOpen && (
-        <ReviewModal
-          hotelId={hotelId}
-          authUserId={authUserId}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
     </>
   );
 };
