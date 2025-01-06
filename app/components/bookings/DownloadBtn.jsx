@@ -1,0 +1,48 @@
+"use client";
+
+import { generateBookingPDF } from "@/utils/generatePDF";
+import { useState } from "react";
+
+export const DownloadBtn = ({ bookingData }) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleDownload = async () => {
+    if (!bookingData) {
+      alert("Booking data is missing");
+      return;
+    }
+
+    try {
+      setIsGenerating(true);
+
+      const pdfBlob = await generateBookingPDF(bookingData);
+
+      // Create URL and trigger download
+      const url = URL.createObjectURL(pdfBlob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `booking-${Date.now()}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleDownload}
+      disabled={isGenerating}
+      className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <i className="fas fa-download mr-2"></i>
+      {isGenerating ? "Generating PDF..." : "Download Receipt"}
+    </button>
+  );
+};
+
+export default DownloadBtn;

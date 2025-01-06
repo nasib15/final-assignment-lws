@@ -9,7 +9,7 @@ import {
   replaceMongoIdInObject,
 } from "@/utils/data-utils";
 
-// get all hotels for the current page with pagination
+// get all hotels for the current page with pagination and search
 export async function getAllHotels(page = 1, query, limit = 8) {
   await dbConnect();
 
@@ -100,6 +100,15 @@ export async function getOneBookingDetails(hotelId, userId, checkin, checkout) {
     ?.lean();
 
   return replaceMongoIdInObject(booking);
+}
+
+// get user bookings
+export async function getUserBookings(userId) {
+  await dbConnect();
+
+  const bookings = await bookingModel?.find({ userId })?.lean();
+
+  return replaceMongoIdInArray(bookings);
 }
 
 // get payment details by booking id
