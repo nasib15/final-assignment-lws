@@ -5,9 +5,10 @@ import { paymentModel } from "@/models/payment";
 import { reviewModel } from "@/models/reviews";
 import { userModel } from "@/models/users";
 import {
-  replaceMongoIdInArray,
-  replaceMongoIdInObject,
+    replaceMongoIdInArray,
+    replaceMongoIdInObject,
 } from "@/utils/data-utils";
+import { revalidatePath } from "next/cache";
 
 // get all hotels for the current page with pagination and search
 export async function getAllHotels(page = 1, query, limit = 8) {
@@ -118,4 +119,15 @@ export async function getPaymentDetails(bookingId) {
   const payment = await paymentModel?.findOne({ bookingId })?.lean();
 
   return replaceMongoIdInObject(payment);
+}
+
+// add hotel data
+export async function addHotelData(hotelData) {
+  await dbConnect();
+
+  const hotel = await hotelModel?.create(hotelData);
+
+  revalidatePath("/")
+
+  return replaceMongoIdInObject(hotel);
 }

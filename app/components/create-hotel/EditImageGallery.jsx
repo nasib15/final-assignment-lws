@@ -8,7 +8,7 @@ const EditImageGallery = ({ thumbnail, gallery, onSave }) => {
   const [tempThumbnail, setTempThumbnail] = useState(thumbnail);
   const [tempGallery, setTempGallery] = useState(gallery);
 
-  // Function to validate and return a valid image URL
+  // Validate and return a valid image URL
   const isValidUrl = (url) => {
     if (!url) return false;
     try {

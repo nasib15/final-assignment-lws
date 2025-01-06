@@ -8,17 +8,17 @@ import EditImageGallery from "@/app/components/create-hotel/EditImageGallery";
 import HotelFeatures from "@/app/components/create-hotel/HotelFeatures";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const CreateHotelPage = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: "",
     location: "",
     description: "",
-    owner: session?.user?.name || "",
+    owner: session?.user?.name,
     pricePerNight: "",
     totalGuests: "",
     totalBeds: "",
@@ -29,26 +29,24 @@ const CreateHotelPage = () => {
     amenities: [],
   });
 
+  // Update owner when session is loaded
+  useEffect(() => {
+    if (status === "authenticated" && session?.user?.name) {
+      setFormData((prev) => ({
+        ...prev,
+        owner: session.user.name,
+      }));
+    } else if (status === "unauthenticated") {
+      // Redirect to login
+      router.push("/login");
+    }
+  }, [session, status, router]);
+
   // Handle save for different sections
   const handleSave = (section, data) => {
     setFormData((prev) => ({
       ...prev,
       ...data,
-    }));
-  };
-
-  // Handle amenity operations
-  const handleAddAmenity = (amenity) => {
-    setFormData((prev) => ({
-      ...prev,
-      amenities: [...prev.amenities, amenity],
-    }));
-  };
-
-  const handleRemoveAmenity = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      amenities: prev.amenities.filter((_, i) => i !== index),
     }));
   };
 
@@ -80,16 +78,31 @@ const CreateHotelPage = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        router.push(`/hotels/${data.hotelId}`);
+        router.push("/");
       }
     } catch (error) {
-      console.error("Failed to create hotel:", error);
+      throw new Error(error.message);
     }
   };
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8 relative w-full">
+      {!formData.owner && (
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4  max-w-4xl">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <i className="fas fa-exclamation-triangle text-yellow-400"></i>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-yellow-700">
+                There was a problem loading your profile. Please try refreshing
+                the page.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       <button
         onClick={handlePublish}
         disabled={!isFormValid()}
@@ -135,11 +148,7 @@ const CreateHotelPage = () => {
             onSave={handleSave}
           />
 
-          <HotelFeatures
-            amenities={formData.amenities}
-            onAdd={handleAddAmenity}
-            onRemove={handleRemoveAmenity}
-          />
+          <HotelFeatures amenities={formData.amenities} onSave={handleSave} />
         </div>
       </div>
     </div>
