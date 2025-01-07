@@ -2,6 +2,7 @@
 
 import { performDelete } from "@/app/actions/hotels";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export const DeleteBtn = ({ hotelId }) => {
   const router = useRouter();
@@ -11,7 +12,7 @@ export const DeleteBtn = ({ hotelId }) => {
         const res = await performDelete(hotelId);
 
         if (res.success) {
-          alert("Hotel deleted successfully");
+          toast.success("Hotel deleted successfully");
           router.refresh();
         }
       }

@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import toast from "react-hot-toast";
 
 const BookingForm = ({
   hotelId,
@@ -64,7 +65,7 @@ const BookingForm = ({
   useEffect(() => {
     const nights = differenceInDays(
       dateRange[0].endDate,
-      dateRange[0].startDate,
+      dateRange[0].startDate
     );
     const calculatedPrice = nights * pricePerNight;
     setTotalPrice(calculatedPrice);
@@ -95,9 +96,9 @@ const BookingForm = ({
     const response = await addBooking(bookingData);
 
     if (response.success) {
-      alert("Booking added successfully");
+      toast.success("Booking added successfully");
       router.push(
-        `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.bookingPrice}`,
+        `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.bookingPrice}`
       );
     }
   };
@@ -133,7 +134,7 @@ const BookingForm = ({
                         day: "numeric",
                         month: "short",
                         year: "numeric",
-                      },
+                      }
                     )}{" "}
                     -{" "}
                     {new Date(dateRange[0].endDate).toLocaleDateString(
@@ -142,7 +143,7 @@ const BookingForm = ({
                         day: "numeric",
                         month: "short",
                         year: "numeric",
-                      },
+                      }
                     )}
                   </div>
                 </div>

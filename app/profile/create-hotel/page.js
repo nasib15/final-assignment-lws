@@ -9,6 +9,7 @@ import HotelFeatures from "@/app/components/create-hotel/HotelFeatures";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const CreateHotelPage = () => {
   const { data: session, status } = useSession();
@@ -100,6 +101,7 @@ const CreateHotelPage = () => {
       });
 
       if (response.ok) {
+        toast.success("Hotel published successfully");
         router.push("/profile/manage-hotels");
         router.refresh();
       }

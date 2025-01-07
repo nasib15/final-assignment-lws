@@ -2,6 +2,7 @@
 
 import { deleteReview } from "@/app/actions/review";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const DeleteBtn = ({ reviewId }) => {
   const router = useRouter();
@@ -10,7 +11,7 @@ const DeleteBtn = ({ reviewId }) => {
       if (window.confirm("Are you sure you want to delete this review?")) {
         const res = await deleteReview(reviewId);
         if (res.success) {
-          alert(res.message);
+          toast.success(res.message);
           router.refresh();
         }
       }

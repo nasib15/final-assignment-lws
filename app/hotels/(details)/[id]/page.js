@@ -130,11 +130,6 @@ const HotelDetailsPage = async ({ params: { id } }) => {
             />
           ))}
         </div>
-
-        {/* Show more btn */}
-        {/* <button className="px-4 py-2 border border-gray-900 rounded-lg hover:bg-gray-100 mt-8">
-          Show More
-        </button> */}
       </div>
     </>
   );

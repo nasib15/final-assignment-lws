@@ -34,7 +34,8 @@ const EditHotelPrice = ({ price, onSave }) => {
           </div>
           <button
             onClick={handleSave}
-            className="px-4 py-1 bg-primary text-white rounded-lg hover:brightness-90 transition-all"
+            disabled={!tempPrice}
+            className="px-4 py-1 bg-primary text-white rounded-lg hover:brightness-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Save
           </button>

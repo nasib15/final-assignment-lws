@@ -2,13 +2,14 @@
 
 import { generateBookingPDF } from "@/utils/generatePDF";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export const DownloadBtn = ({ bookingData }) => {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleDownload = async () => {
     if (!bookingData) {
-      alert("Booking data is missing");
+      toast.error("Booking data is missing");
       return;
     }
 
@@ -27,7 +28,7 @@ export const DownloadBtn = ({ bookingData }) => {
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error) {
-      alert("Failed to generate PDF. Please try again.");
+      toast.error("Failed to generate PDF. Please try again.");
     } finally {
       setIsGenerating(false);
     }

@@ -1,14 +1,15 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 
 export default function Modal({ children }) {
   const overlay = useRef(null);
   const wrapper = useRef(null);
   const router = useRouter();
+  const pathName = usePathname();
 
   const onDismiss = useCallback(() => {
-    router.back();
+    router.push("/");
   }, [router]);
 
   const onClick = useCallback(
@@ -17,20 +18,28 @@ export default function Modal({ children }) {
         onDismiss();
       }
     },
-    [onDismiss],
+    [onDismiss]
   );
 
   const onKeyDown = useCallback(
     (e) => {
       if (e.key === "Escape") onDismiss();
     },
-    [onDismiss],
+    [onDismiss]
   );
 
   useEffect(() => {
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [onKeyDown]);
+
+  // close modal on route change
+  const isLoginOrRegistrationPage =
+    pathName === "/login" || pathName === "/register";
+
+  if (!isLoginOrRegistrationPage) {
+    return null;
+  }
 
   return (
     <div

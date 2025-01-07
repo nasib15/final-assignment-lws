@@ -73,7 +73,9 @@ const BookingCard = async ({ booking }) => {
       </div>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
-          href={`/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${Number(paymentDetails.totalPrice)}`}
+          href={`/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${Number(
+            paymentDetails.totalPrice
+          )}`}
           className="px-3 py-2 text-sm bg-primary text-white rounded-lg hover:brightness-90"
         >
           View Trip Details

@@ -1,4 +1,5 @@
 import { SessionProvider } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 import Footer from "./components/shared/Footer";
 import Navbar from "./components/shared/Navbar";
 import "./globals.css";
@@ -26,6 +27,7 @@ export default function RootLayout({ children, modal }) {
           {modal}
           {children}
           <Footer />
+          <Toaster position="top-center" />
         </body>
       </SessionProvider>
     </html>
