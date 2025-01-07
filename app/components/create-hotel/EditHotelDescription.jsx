@@ -19,7 +19,7 @@ const EditHotelDescription = ({ description, onSave }) => {
     }
 
     setError("");
-    onSave("description", { description: tempDescription });
+    onSave({ description: tempDescription });
     setIsEditing(false);
   };
 

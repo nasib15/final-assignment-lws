@@ -37,7 +37,7 @@ const HotelFeatures = ({ amenities, onSave }) => {
     setSelectedAmenities((prev) =>
       prev.includes(amenity)
         ? prev.filter((a) => a !== amenity)
-        : [...prev, amenity],
+        : [...prev, amenity]
     );
   };
 
@@ -47,7 +47,7 @@ const HotelFeatures = ({ amenities, onSave }) => {
   }, [amenities]);
 
   const handleSave = () => {
-    onSave("amenities", { amenities: selectedAmenities });
+    onSave({ amenities: selectedAmenities });
     setIsEditing(false);
   };
 
@@ -100,7 +100,8 @@ const HotelFeatures = ({ amenities, onSave }) => {
             </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:brightness-90"
+              disabled={selectedAmenities.length === 0}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:brightness-90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               Save
             </button>
@@ -111,7 +112,7 @@ const HotelFeatures = ({ amenities, onSave }) => {
           {amenities.length > 0 ? (
             amenities.map((amenity) => {
               const amenityData = amenitiesArray.find(
-                (a) => a.name === amenity,
+                (a) => a.name === amenity
               );
               return (
                 <div

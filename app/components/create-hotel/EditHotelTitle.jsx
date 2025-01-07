@@ -13,7 +13,7 @@ const EditHotelTitle = ({ title, location, onSave }) => {
   }, [title, location]);
 
   const handleSave = () => {
-    onSave("basic", {
+    onSave({
       name: tempTitle,
       location: tempLocation,
     });
@@ -40,7 +40,8 @@ const EditHotelTitle = ({ title, location, onSave }) => {
           />
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-primary text-white rounded-lg w-24 hover:brightness-90 transition-all "
+            disabled={!tempTitle || !tempLocation}
+            className="px-4 py-2 bg-primary text-white rounded-lg w-24 hover:brightness-90 transition-all disabled:cursor-not-allowed disabled:opacity-50"
           >
             Save
           </button>

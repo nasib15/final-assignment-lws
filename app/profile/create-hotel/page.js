@@ -62,7 +62,7 @@ const CreateHotelPage = () => {
   }, [session, status, router]);
 
   // Handle save for different sections
-  const handleSave = (section, data) => {
+  const handleSave = (data) => {
     setFormData((prev) => ({
       ...prev,
       ...data,

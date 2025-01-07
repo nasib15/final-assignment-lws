@@ -38,7 +38,7 @@ const EditImageGallery = ({ thumbnail, gallery, onSave }) => {
 
   const handleSave = () => {
     if (isFormValid()) {
-      onSave("images", {
+      onSave({
         thumbNailUrl: tempThumbnail,
         gallery: tempGallery,
       });

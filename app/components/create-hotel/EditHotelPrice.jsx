@@ -7,7 +7,7 @@ const EditHotelPrice = ({ price, onSave }) => {
   const [tempPrice, setTempPrice] = useState(price);
 
   const handleSave = () => {
-    onSave("price", { pricePerNight: tempPrice });
+    onSave({ pricePerNight: tempPrice });
     setIsEditing(false);
   };
 
@@ -19,7 +19,7 @@ const EditHotelPrice = ({ price, onSave }) => {
   return (
     <>
       {isEditing ? (
-        <div className="space-y-3 mb-3 ">
+        <div className="space-y-4 mb-3">
           <div>
             <label className="text-sm text-gray-600 mb-1 block">
               Price per night (USD)
@@ -34,7 +34,7 @@ const EditHotelPrice = ({ price, onSave }) => {
           </div>
           <button
             onClick={handleSave}
-            className="px-4 py-2 bg-primary text-white rounded-lg mb-4"
+            className="px-4 py-1 bg-primary text-white rounded-lg hover:brightness-90 transition-all"
           >
             Save
           </button>

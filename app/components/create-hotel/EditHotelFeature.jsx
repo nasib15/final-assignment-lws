@@ -15,7 +15,7 @@ const EditHotelFeature = ({ features, onSave }) => {
         totalRooms: "",
         totalBeds: "",
         availableRooms: "",
-      },
+      }
     );
   }, [features]);
 
@@ -38,7 +38,7 @@ const EditHotelFeature = ({ features, onSave }) => {
     }
 
     setError("");
-    onSave("features", tempFeatures);
+    onSave(tempFeatures);
     setIsEditing(false);
   };
 
@@ -123,10 +123,28 @@ const EditHotelFeature = ({ features, onSave }) => {
             </div>
           )}
 
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-4">
+            <button
+              onClick={() => {
+                setIsEditing(false);
+                setTempFeatures(tempFeatures);
+                setError("");
+              }}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
             <button
               onClick={handleSave}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:brightness-90"
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={
+                !tempFeatures.totalGuests ||
+                !tempFeatures.totalBeds ||
+                !tempFeatures.totalRooms ||
+                !tempFeatures.availableRooms ||
+                Number(tempFeatures.availableRooms) >
+                  Number(tempFeatures.totalRooms)
+              }
             >
               Save
             </button>
