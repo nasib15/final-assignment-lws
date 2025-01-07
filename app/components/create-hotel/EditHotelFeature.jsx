@@ -1,11 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const EditHotelFeature = ({ features, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempFeatures, setTempFeatures] = useState(features);
   const [error, setError] = useState("");
+
+  // Update local state when props change
+  useEffect(() => {
+    setTempFeatures(
+      features || {
+        totalGuests: "",
+        totalRooms: "",
+        totalBeds: "",
+        availableRooms: "",
+      },
+    );
+  }, [features]);
 
   const handleSave = () => {
     // Check if available rooms is greater than total rooms

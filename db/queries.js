@@ -8,7 +8,6 @@ import {
   replaceMongoIdInArray,
   replaceMongoIdInObject,
 } from "@/utils/data-utils";
-import { revalidatePath } from "next/cache";
 
 // get all hotels for the current page with pagination and search
 export async function getAllHotels(page = 1, query, limit = 8) {
@@ -127,8 +126,6 @@ export async function addHotelData(hotelData) {
 
   const hotel = await hotelModel?.create(hotelData);
 
-  revalidatePath("/");
-
   return replaceMongoIdInObject(hotel);
 }
 
@@ -147,8 +144,16 @@ export async function deleteHotel(hotelId) {
 
   const hotel = await hotelModel?.findByIdAndDelete(hotelId);
 
-  revalidatePath("/");
-  revalidatePath(`/profile/manage-hotels`);
+  return replaceMongoIdInObject(hotel);
+}
+
+// update hotel
+export async function updateHotel(id, hotelData) {
+  await dbConnect();
+
+  const hotel = await hotelModel
+    .findByIdAndUpdate(id, hotelData, { new: true })
+    .lean();
 
   return replaceMongoIdInObject(hotel);
 }

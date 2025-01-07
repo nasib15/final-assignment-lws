@@ -1,14 +1,17 @@
 "use client";
 
 import { deleteReview } from "@/app/actions/review";
+import { useRouter } from "next/navigation";
 
-const DeleteBtn = ({ reviewId, hotelId }) => {
+const DeleteBtn = ({ reviewId }) => {
+  const router = useRouter();
   const handleDelete = async () => {
     try {
       if (window.confirm("Are you sure you want to delete this review?")) {
-        const res = await deleteReview(reviewId, hotelId);
+        const res = await deleteReview(reviewId);
         if (res.success) {
           alert(res.message);
+          router.refresh();
         }
       }
     } catch (error) {

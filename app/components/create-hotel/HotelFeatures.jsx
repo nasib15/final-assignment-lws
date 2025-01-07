@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const amenitiesArray = [
   {
@@ -30,7 +30,7 @@ const amenitiesArray = [
 ];
 
 const HotelFeatures = ({ amenities, onSave }) => {
-  const [selectedAmenities, setSelectedAmenities] = useState(amenities || []);
+  const [selectedAmenities, setSelectedAmenities] = useState(amenities);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleToggleAmenity = (amenity) => {
@@ -40,6 +40,11 @@ const HotelFeatures = ({ amenities, onSave }) => {
         : [...prev, amenity],
     );
   };
+
+  // Update local state when props change
+  useEffect(() => {
+    setSelectedAmenities(amenities || []);
+  }, [amenities]);
 
   const handleSave = () => {
     onSave("amenities", { amenities: selectedAmenities });

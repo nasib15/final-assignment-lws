@@ -7,12 +7,15 @@ import EditHotelTitle from "@/app/components/create-hotel/EditHotelTitle";
 import EditImageGallery from "@/app/components/create-hotel/EditImageGallery";
 import HotelFeatures from "@/app/components/create-hotel/HotelFeatures";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const CreateHotelPage = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editHotelId = searchParams.get("edit");
+  const isEditMode = Boolean(editHotelId);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -29,7 +32,24 @@ const CreateHotelPage = () => {
     amenities: [],
   });
 
-  // Update owner when session is loaded
+  // Fetch hotel data if it is an edit mode
+  useEffect(() => {
+    const fetchHotelData = async () => {
+      if (isEditMode) {
+        try {
+          const response = await fetch(`/api/hotels/${editHotelId}`);
+          const hotelData = await response.json();
+          setFormData(hotelData);
+        } catch (error) {
+          throw new Error(error.message);
+        }
+      }
+    };
+
+    fetchHotelData();
+  }, [editHotelId, isEditMode]);
+
+  // Update owner
   useEffect(() => {
     if (status === "authenticated" && session?.user?.name) {
       setFormData((prev) => ({
@@ -37,7 +57,6 @@ const CreateHotelPage = () => {
         owner: session.user.name,
       }));
     } else if (status === "unauthenticated") {
-      // Redirect to login
       router.push("/login");
     }
   }, [session, status, router]);
@@ -69,8 +88,11 @@ const CreateHotelPage = () => {
 
   const handlePublish = async () => {
     try {
-      const response = await fetch("/api/hotels", {
-        method: "POST",
+      const url = isEditMode ? `/api/hotels/${editHotelId}` : "/api/hotels";
+      const method = isEditMode ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -78,7 +100,8 @@ const CreateHotelPage = () => {
       });
 
       if (response.ok) {
-        router.push("/");
+        router.push("/profile/manage-hotels");
+        router.refresh();
       }
     } catch (error) {
       throw new Error(error.message);
@@ -109,8 +132,13 @@ const CreateHotelPage = () => {
         className="px-4 py-2 bg-primary text-white rounded-lg hover:brightness-90 absolute top-4 right-4 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <i className="fas fa-save mr-2"></i>
-        Publish
+        {isEditMode ? "Update" : "Publish"}
       </button>
+
+      <h1 className="text-3xl font-bold mb-6">
+        {isEditMode ? "Edit Hotel" : "Create New Hotel"}
+      </h1>
+
       <EditHotelTitle
         title={formData.name}
         location={formData.location}

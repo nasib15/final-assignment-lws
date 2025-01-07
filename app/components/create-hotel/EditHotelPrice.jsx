@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const EditHotelPrice = ({ price, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -10,6 +10,11 @@ const EditHotelPrice = ({ price, onSave }) => {
     onSave("price", { pricePerNight: tempPrice });
     setIsEditing(false);
   };
+
+  // Update local state when props change
+  useEffect(() => {
+    setTempPrice(price || "");
+  }, [price]);
 
   return (
     <>

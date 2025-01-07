@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const EditHotelDescription = ({ description, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempDescription, setTempDescription] = useState(description);
   const [error, setError] = useState(null);
+
+  // Update local state when props change
+  useEffect(() => {
+    setTempDescription(description || "");
+  }, [description]);
 
   const handleSave = () => {
     if (!tempDescription.trim()) {

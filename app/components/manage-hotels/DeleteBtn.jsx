@@ -1,8 +1,10 @@
 "use client";
 
 import { performDelete } from "@/app/actions/hotels";
+import { useRouter } from "next/navigation";
 
 export const DeleteBtn = ({ hotelId }) => {
+  const router = useRouter();
   const handleDelete = async () => {
     try {
       if (window.confirm("Are you sure you want to delete this hotel?")) {
@@ -10,6 +12,7 @@ export const DeleteBtn = ({ hotelId }) => {
 
         if (res.success) {
           alert("Hotel deleted successfully");
+          router.refresh();
         }
       }
     } catch (error) {

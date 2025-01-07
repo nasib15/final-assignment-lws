@@ -2,16 +2,13 @@
 
 import dbConnect from "@/lib/dbConnect";
 import { reviewModel } from "@/models/reviews";
-import { revalidatePath } from "next/cache";
 
 // add review
-export async function addReview(hotelId, reviewData) {
+export async function addReview(reviewData) {
   await dbConnect();
 
   try {
     await reviewModel.create(reviewData);
-
-    revalidatePath(`${process.env.NEXT_PUBLIC_BASE_URL}/hotels/${hotelId}`);
 
     return {
       success: true,
@@ -23,12 +20,11 @@ export async function addReview(hotelId, reviewData) {
 }
 
 // delete review
-export async function deleteReview(reviewId, hotelId) {
+export async function deleteReview(reviewId) {
   await dbConnect();
 
   try {
     await reviewModel.findByIdAndDelete(reviewId);
-    revalidatePath(`${process.env.NEXT_PUBLIC_BASE_URL}/hotels/${hotelId}`);
     return {
       success: true,
       message: "Review deleted successfully",

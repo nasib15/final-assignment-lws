@@ -1,10 +1,15 @@
+import { getReviewsByHotelId } from "@/db/queries";
+import { getAvgRating } from "@/utils/getAvgRating";
 import Image from "next/image";
 import Link from "next/link";
 import { DeleteBtn } from "./DeleteBtn";
 
-const ManageHotelCard = ({ hotel }) => {
+const ManageHotelCard = async ({ hotel }) => {
   const { id, name, location, pricePerNight, availableRooms, thumbNailUrl } =
     hotel;
+
+  const hotelReviews = await getReviewsByHotelId(id);
+  const averageRating = getAvgRating(hotelReviews);
 
   return (
     <div className="overflow-hidden cursor-pointer">
@@ -17,7 +22,8 @@ const ManageHotelCard = ({ hotel }) => {
           height={192}
         />
         <div className="absolute top-4 right-4 bg-white/80 px-3 py-1 rounded-full text-sm font-semibold">
-          <i className="fas fa-star text-yellow-500 mr-1"></i>4.8
+          <i className="fas fa-star text-yellow-500 mr-1"></i>
+          {averageRating.toFixed(1)}
         </div>
       </div>
       <div className="p-4">
@@ -34,7 +40,7 @@ const ManageHotelCard = ({ hotel }) => {
           <span className="text-zinc-500">Location: {location}</span>
           <div className="space-x-2">
             <Link
-              href="/profile/create-hotel"
+              href={`/profile/create-hotel?edit=${id}`}
               className="text-blue-500 hover:text-blue-600"
             >
               <i className="fas fa-edit"></i>

@@ -1,10 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const EditHotelTitle = ({ title, location, onSave }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempTitle, setTempTitle] = useState(title);
   const [tempLocation, setTempLocation] = useState(location);
+
+  // Update local state when props change
+  useEffect(() => {
+    setTempTitle(title || "");
+    setTempLocation(location || "");
+  }, [title, location]);
 
   const handleSave = () => {
     onSave("basic", {
@@ -23,7 +29,7 @@ const EditHotelTitle = ({ title, location, onSave }) => {
             value={tempTitle}
             onChange={(e) => setTempTitle(e.target.value)}
             placeholder="Hotel name"
-            className="max-w-xl p-2 border rounded-lg text-2xl font-bold"
+            className="max-w-xl p-2 border rounded-lg text-2xl font-semibold"
           />
           <input
             type="text"
@@ -44,7 +50,7 @@ const EditHotelTitle = ({ title, location, onSave }) => {
           className="cursor-pointer group"
           onClick={() => setIsEditing(true)}
         >
-          <h1 className="text-3xl font-bold mb-2 text-zinc-800">
+          <h1 className="text-2xl font-semibold mb-2 text-zinc-800">
             {title || "Hotel Name"}
             <i className="fas fa-pencil-alt text-gray-400 ml-2 opacity-0 group-hover:opacity-100 text-sm hover:scale-110 transition-all" />
           </h1>

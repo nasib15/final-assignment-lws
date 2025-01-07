@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AlertInfoIcon } from "../Icons/Icon";
 
 const EditImageGallery = ({ thumbnail, gallery, onSave }) => {
@@ -29,6 +29,12 @@ const EditImageGallery = ({ thumbnail, gallery, onSave }) => {
     const galleryValid = tempGallery.every(isValidUrl);
     return thumbnailValid && galleryValid;
   };
+
+  // Update local state when props change
+  useEffect(() => {
+    setTempThumbnail(thumbnail || "");
+    setTempGallery(gallery || []);
+  }, [thumbnail, gallery]);
 
   const handleSave = () => {
     if (isFormValid()) {

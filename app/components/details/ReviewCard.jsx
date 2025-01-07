@@ -9,7 +9,6 @@ const ReviewCard = async ({ review, authUserId }) => {
     reviewDate,
     userId: reviewUserId,
     id: reviewId,
-    hotelId,
   } = review;
 
   // Check if the review belongs to the current user
@@ -47,7 +46,7 @@ const ReviewCard = async ({ review, authUserId }) => {
           </div>
 
           {/* Delete Button - Only visible for review owner */}
-          {isMyReview && <DeleteBtn hotelId={hotelId} reviewId={reviewId} />}
+          {isMyReview && <DeleteBtn reviewId={reviewId} />}
         </div>
 
         {/* Rating Stars */}
