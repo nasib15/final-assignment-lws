@@ -5,8 +5,8 @@ import { paymentModel } from "@/models/payment";
 import { reviewModel } from "@/models/reviews";
 import { userModel } from "@/models/users";
 import {
-    replaceMongoIdInArray,
-    replaceMongoIdInObject,
+  replaceMongoIdInArray,
+  replaceMongoIdInObject,
 } from "@/utils/data-utils";
 import { revalidatePath } from "next/cache";
 
@@ -127,7 +127,28 @@ export async function addHotelData(hotelData) {
 
   const hotel = await hotelModel?.create(hotelData);
 
-  revalidatePath("/")
+  revalidatePath("/");
+
+  return replaceMongoIdInObject(hotel);
+}
+
+// get all hotels for a user
+export async function getUserHotels(authUserName) {
+  await dbConnect();
+
+  const hotels = await hotelModel?.find({ owner: authUserName })?.lean();
+
+  return replaceMongoIdInArray(hotels);
+}
+
+// delete hotel by id
+export async function deleteHotel(hotelId) {
+  await dbConnect();
+
+  const hotel = await hotelModel?.findByIdAndDelete(hotelId);
+
+  revalidatePath("/");
+  revalidatePath(`/profile/manage-hotels`);
 
   return replaceMongoIdInObject(hotel);
 }
