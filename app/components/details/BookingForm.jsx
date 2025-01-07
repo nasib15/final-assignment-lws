@@ -25,6 +25,7 @@ const BookingForm = ({
     },
   ]);
 
+  const [isAvailable, setIsAvailable] = useState(true);
   const [showCalendar, setShowCalendar] = useState(false);
   const [guests, setGuests] = useState(1);
   const [totalPrice, setTotalPrice] = useState(pricePerNight);
@@ -32,11 +33,38 @@ const BookingForm = ({
   const router = useRouter();
   const avgRating = getAvgRating(reviewDetails);
 
+  // Check availability on date change
+  useEffect(() => {
+    const checkAvailability = async () => {
+      try {
+        const response = await fetch("/api/hotels/check-availability", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            hotelId,
+            checkin: dateRange[0].startDate.toISOString(),
+            checkout: dateRange[0].endDate.toISOString(),
+          }),
+        });
+
+        const data = await response.json();
+        setIsAvailable(data.available);
+      } catch (error) {
+        setIsAvailable(false);
+        throw new Error(error);
+      }
+    };
+
+    checkAvailability();
+  }, [dateRange, hotelId]);
+
   // Calculate total price whenever dates or guests change
   useEffect(() => {
     const nights = differenceInDays(
       dateRange[0].endDate,
-      dateRange[0].startDate
+      dateRange[0].startDate,
     );
     const calculatedPrice = nights * pricePerNight;
     setTotalPrice(calculatedPrice);
@@ -69,7 +97,7 @@ const BookingForm = ({
     if (response.success) {
       alert("Booking added successfully");
       router.push(
-        `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.bookingPrice}`
+        `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.bookingPrice}`,
       );
     }
   };
@@ -105,7 +133,7 @@ const BookingForm = ({
                         day: "numeric",
                         month: "short",
                         year: "numeric",
-                      }
+                      },
                     )}{" "}
                     -{" "}
                     {new Date(dateRange[0].endDate).toLocaleDateString(
@@ -114,7 +142,7 @@ const BookingForm = ({
                         day: "numeric",
                         month: "short",
                         year: "numeric",
-                      }
+                      },
                     )}
                   </div>
                 </div>
@@ -135,6 +163,17 @@ const BookingForm = ({
               </div>
             )}
           </div>
+
+          {/* Availability Message */}
+          {!isAvailable ? (
+            <div className="text-red-500 text-sm mt-2">
+              These dates are not available. Please select different dates.
+            </div>
+          ) : (
+            <div className="text-green-500 text-sm mt-2">
+              Dates are available!
+            </div>
+          )}
 
           {/* Guests Selection */}
           <div className="border rounded-lg p-3">
@@ -180,9 +219,14 @@ const BookingForm = ({
           {/* Reserve Button */}
           <button
             onClick={handleReserve}
-            className="w-full block text-center bg-primary text-white py-3 rounded-lg transition-all hover:brightness-90"
+            disabled={!isAvailable}
+            className={`w-full block text-center ${
+              !isAvailable
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-primary hover:brightness-90"
+            } text-white py-3 rounded-lg mt-6 transition-all`}
           >
-            Reserve
+            {isAvailable ? "Reserve" : "Dates Not Available"}
           </button>
 
           <div className="text-center text-sm text-gray-500">

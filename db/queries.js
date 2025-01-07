@@ -157,3 +157,18 @@ export async function updateHotel(id, hotelData) {
 
   return replaceMongoIdInObject(hotel);
 }
+
+// Check if dates are available for booking
+export async function checkDateAvailability(hotelId, checkin, checkout) {
+  await dbConnect();
+
+  const overlappingBookings = await bookingModel
+    .find({
+      hotelId,
+      checkin: { $lte: checkout },
+      checkout: { $gte: checkin },
+    })
+    .lean();
+
+  return overlappingBookings.length === 0;
+}

@@ -2,6 +2,28 @@
 
 ## Live Link: https://final-assignment-lws-hotelbooking.vercel.app
 
+# Dummy Users:
+
+1. User1:
+   - Email: user1@example.com
+   - Password: userone1234
+
+2. User2:
+   - Email: user2@example.com
+   - Password: usertwo1234
+
+3. User3:
+   - Email: user3@example.com
+   - Password: userthree1234
+
+4. User4:
+   - Email: user4@example.com
+   - Password: userfour1234
+
+5. User5:
+   - Email: user5@example.com
+   - Password: userfive1234
+
 # Requirements:
 
 - ইউজার Authentication Implement করতে হবে । এক্ষেত্রে Access Token এবং Refresh Token যথাযথ ভাবে কাজ করতে পারতে হবে ।
