@@ -27,7 +27,7 @@ export default function RootLayout({ children, modal }) {
           {modal}
           {children}
           <Footer />
-          <Toaster position="top-center" />
+          <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
         </body>
       </SessionProvider>
     </html>

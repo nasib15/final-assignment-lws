@@ -3,6 +3,7 @@
 import { addReview } from "@/app/actions/review";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const ReviewModal = ({ onClose, hotelId, authUserId }) => {
   const [rating, setRating] = useState(0);
@@ -26,6 +27,7 @@ const ReviewModal = ({ onClose, hotelId, authUserId }) => {
 
       if (response.success) {
         onClose();
+        toast.success("Review added successfully");
         router.refresh();
       }
     } catch (error) {
