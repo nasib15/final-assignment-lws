@@ -1,6 +1,7 @@
 import Logo from "@/public/logo.svg";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import SearchInput from "../home/SearchInput";
 import NavbarMenu from "./NavbarMenu";
 
@@ -16,7 +17,9 @@ const Navbar = () => {
       <div className="row-start-2 col-span-2 md:flex-1 max-w-lg mx-auto w-full">
         <div className="flex items-center border rounded-full shadow-sm hover:shadow-md transition-all mt-3 md:mt-0">
           <div className="flex-grow py-2 px-4">
-            <SearchInput />
+            <Suspense fallback={<div>Loading...</div>}>
+              <SearchInput />
+            </Suspense>
           </div>
           <button className="bg-primary w-9 h-9 rounded-full grid place-items-center text-sm text-center transition-all hover:brightness-90 shrink-0 mx-1">
             <i className="fas fa-search text-white"></i>

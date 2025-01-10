@@ -1,3 +1,4 @@
+import { findBookingId } from "@/app/actions/booking";
 import BookingCardPic from "@/app/components/payment/BookingCardPic";
 import BookingDetails from "@/app/components/payment/BookingDetails";
 import Button from "@/app/components/payment/Button";
@@ -7,15 +8,16 @@ import { auth } from "@/auth";
 import {
   getHotelById,
   getReviewsByHotelId,
-  getUserByEmail,
+  getUserIdByEmail,
 } from "@/db/queries";
 import { getAvgRating } from "@/utils/getAvgRating";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 
 const PaymentPage = async ({ params: { id }, searchParams }) => {
   const hotelDetails = await getHotelById(id);
   const { user: authUser } = await auth();
-  const authUserId = await getUserByEmail(authUser.email);
+  const authUserId = await getUserIdByEmail(authUser.email);
 
   const hotelReviews = await getReviewsByHotelId(id);
   const totalReviews = hotelReviews?.length;
@@ -26,7 +28,10 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
   }
 
   const { name, thumbNailUrl } = hotelDetails;
-  const { checkin, checkout, guests, totalPrice } = searchParams;
+  const { checkin, checkout, guests, totalPrice, bookedAt } = searchParams;
+
+  // get booking id
+  const bookingId = await findBookingId(id, authUserId, bookedAt);
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
@@ -36,11 +41,13 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
-          <BookingDetails
-            hotelId={id}
-            pricePerNight={hotelDetails.pricePerNight}
-            totalGuests={hotelDetails.totalGuests}
-          />
+          <Suspense fallback={<div>Loading...</div>}>
+            <BookingDetails
+              hotelId={id}
+              pricePerNight={hotelDetails.pricePerNight}
+              totalGuests={hotelDetails.totalGuests}
+            />
+          </Suspense>
 
           <PaymentFormWrapper
             hotelId={id}
@@ -51,6 +58,8 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
             totalPrice={totalPrice}
             authUser={authUser}
             hotelDetails={hotelDetails}
+            bookingId={bookingId}
+            bookedAt={bookedAt}
           />
         </div>
 

@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/app/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 

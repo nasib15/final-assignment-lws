@@ -4,33 +4,37 @@ import NextSteps from "@/app/components/payment/NextSteps";
 import SuccessDetails from "@/app/components/payment/SuccessDetails";
 import SuccessMessage from "@/app/components/payment/SuccessMessage";
 import { auth } from "@/auth";
-import { getHotelById, getPaymentDetails, getUserByEmail } from "@/db/queries";
+import {
+  getHotelById,
+  getPaymentDetails,
+  getUserIdByEmail,
+} from "@/db/queries";
 import differenceInDays from "@/utils/getDifferenceInDays";
 import { notFound } from "next/navigation";
 
 const SuccessPage = async ({ params: { id }, searchParams }) => {
   const hotelDetails = await getHotelById(id);
-  const { checkin, checkout, guests } = searchParams;
+  const { checkin, checkout, guests, bookedAt } = searchParams;
 
   const { user: authUser } = await auth();
-  const authUserId = await getUserByEmail(authUser.email);
+  const authUserId = await getUserIdByEmail(authUser.email);
 
-  const bookingId = await findBookingId(id, authUserId, checkin, checkout);
+  const bookingId = await findBookingId(id, authUserId, bookedAt);
 
-  const paymentDetails = await getPaymentDetails(bookingId);
+  const paymentDetails = (await getPaymentDetails(bookingId)) || {};
 
   if (!hotelDetails) {
     notFound();
   }
 
   const bookingData = {
-    guestName: authUser.name,
-    guestEmail: authUser.email,
-    hotelName: hotelDetails.name,
-    hotelLocation: hotelDetails.location,
-    hotelAddress: `${hotelDetails.location}, 42028`,
+    guestName: authUser?.name,
+    guestEmail: authUser?.email,
+    hotelName: hotelDetails?.name,
+    hotelLocation: hotelDetails?.location,
+    hotelAddress: `${hotelDetails?.location}, 42028`,
     hotelPhone: "+1 234 567 8900",
-    hotelEmail: `contact@${hotelDetails.name
+    hotelEmail: `contact@${hotelDetails?.name
       .split(" ")
       .join("_")
       .toLowerCase()}.com`,
@@ -38,15 +42,15 @@ const SuccessPage = async ({ params: { id }, searchParams }) => {
     checkout,
     nights: differenceInDays(new Date(checkout), new Date(checkin)),
     guests: Number(guests),
-    pricePerNight: Number(hotelDetails.pricePerNight),
-    totalPrice: Number(searchParams.totalPrice),
+    pricePerNight: Number(hotelDetails?.pricePerNight),
+    totalPrice: Number(searchParams?.totalPrice),
     bookingId,
     billingAddress: {
-      streetAddress: paymentDetails.streetAddress,
-      aptNumber: paymentDetails.aptNumber,
-      city: paymentDetails.city,
-      state: paymentDetails.state,
-      zipCode: paymentDetails.zipCode,
+      streetAddress: paymentDetails?.streetAddress,
+      aptNumber: paymentDetails?.aptNumber,
+      city: paymentDetails?.city,
+      state: paymentDetails?.state,
+      zipCode: paymentDetails?.zipCode,
     },
   };
 

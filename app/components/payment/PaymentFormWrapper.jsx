@@ -1,11 +1,11 @@
 "use client";
 
-import { findBookingId } from "@/app/actions/booking";
 import { addPayment } from "@/app/actions/payment";
 import { generateBookingPDF } from "@/utils/generatePDF";
 import differenceInDays from "@/utils/getDifferenceInDays";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { InfoIcon } from "../Icons/Icon";
 import Input from "../shared/Input";
 
@@ -18,6 +18,8 @@ const PaymentFormWrapper = ({
   totalPrice,
   authUser,
   hotelDetails,
+  bookingId,
+  bookedAt,
 }) => {
   const [formData, setFormData] = useState({
     cardNumber: "",
@@ -28,7 +30,6 @@ const PaymentFormWrapper = ({
     city: "",
     state: "",
     zipCode: "",
-    totalPrice: Number(totalPrice) + 51.31 + 17.5,
   });
 
   const [errors, setErrors] = useState({});
@@ -74,24 +75,20 @@ const PaymentFormWrapper = ({
       return;
     }
 
-    // get booking id
-    const bookingId = await findBookingId(
-      hotelId,
-      authUserId,
-      checkin,
-      checkout
-    );
-
     try {
       // Add payment
-      const response = await addPayment(
+      const paymentResponse = await addPayment(
         authUserId,
         hotelId,
         formData,
+        totalPrice,
+        checkin,
+        checkout,
+        guests,
         bookingId
       );
 
-      if (response.success) {
+      if (paymentResponse.success) {
         // booking data
         const bookingData = {
           guestName: authUser.name,
@@ -109,7 +106,7 @@ const PaymentFormWrapper = ({
           nights: differenceInDays(new Date(checkout), new Date(checkin)),
           guests: Number(guests),
           pricePerNight: Number(hotelDetails.pricePerNight),
-          totalPrice: Number(formData.totalPrice),
+          totalPrice: Number(totalPrice) + 51.31 + 17.5,
           bookingId,
           billingAddress: {
             streetAddress: formData.streetAddress,
@@ -155,10 +152,12 @@ const PaymentFormWrapper = ({
         setErrors({});
         setIsSubmitting(false);
 
+        toast.success("Payment successful!");
+
         router.push(
           `/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${
             Number(totalPrice) + 51.31 + 17.5
-          }`
+          }&bookedAt=${bookedAt}`
         );
       }
     } catch (error) {

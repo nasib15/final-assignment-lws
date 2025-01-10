@@ -8,7 +8,7 @@ import { auth } from "@/auth";
 import {
   getHotelById,
   getReviewsByHotelId,
-  getUserByEmail,
+  getUserIdByEmail,
   getUserReview,
 } from "@/db/queries";
 import Link from "next/link";
@@ -20,7 +20,7 @@ const HotelDetailsPage = async ({ params: { id } }) => {
   // get authenticated user details
   const authSession = await auth();
   const authUser = authSession?.user;
-  const authUserId = authUser ? await getUserByEmail(authUser?.email) : null;
+  const authUserId = authUser ? await getUserIdByEmail(authUser?.email) : null;
 
   // get review details
   const reviewDetails = await getReviewsByHotelId(id);

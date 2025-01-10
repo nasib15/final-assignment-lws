@@ -14,17 +14,17 @@ const BookingCard = async ({ booking }) => {
   const { id, checkin, checkout, guests, bookedAt } = booking;
 
   // payment form data
-  const paymentDetails = await getPaymentDetails(id);
+  const paymentDetails = (await getPaymentDetails(id)) || {};
 
   // booking data
   const bookingData = {
-    guestName: authUser.name,
-    guestEmail: authUser.email,
-    hotelName: hotelDetails.name,
-    hotelLocation: hotelDetails.location,
-    hotelAddress: `${hotelDetails.location}, 42028`,
+    guestName: authUser?.name,
+    guestEmail: authUser?.email,
+    hotelName: hotelDetails?.name,
+    hotelLocation: hotelDetails?.location,
+    hotelAddress: `${hotelDetails?.location}, 42028`,
     hotelPhone: "+1 234 567 8900",
-    hotelEmail: `contact@${hotelDetails.name
+    hotelEmail: `contact@${hotelDetails?.name
       .split(" ")
       .join("_")
       .toLowerCase()}.com`,
@@ -32,15 +32,15 @@ const BookingCard = async ({ booking }) => {
     checkout,
     nights: differenceInDays(new Date(checkout), new Date(checkin)),
     guests: Number(guests),
-    pricePerNight: Number(hotelDetails.pricePerNight),
-    totalPrice: Number(paymentDetails.totalPrice),
+    pricePerNight: Number(hotelDetails?.pricePerNight),
+    totalPrice: Number(paymentDetails?.totalPrice),
     bookingId: id,
     billingAddress: {
-      streetAddress: paymentDetails.streetAddress,
-      aptNumber: paymentDetails.aptNumber,
-      city: paymentDetails.city,
-      state: paymentDetails.state,
-      zipCode: paymentDetails.zipCode,
+      streetAddress: paymentDetails?.streetAddress,
+      aptNumber: paymentDetails?.aptNumber,
+      city: paymentDetails?.city,
+      state: paymentDetails?.state,
+      zipCode: paymentDetails?.zipCode,
     },
   };
 
@@ -60,7 +60,7 @@ const BookingCard = async ({ booking }) => {
           </h2>
           <p className="text-zinc-500 text-sm">
             Booking Date:{" "}
-            {new Date(bookedAt).toLocaleDateString("en-UK", {
+            {new Date(Number(bookedAt)).toLocaleDateString("en-UK", {
               day: "numeric",
               month: "short",
               year: "numeric",
@@ -75,7 +75,7 @@ const BookingCard = async ({ booking }) => {
         <Link
           href={`/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${Number(
             paymentDetails.totalPrice
-          )}`}
+          )}&bookedAt=${bookedAt}`}
           className="px-3 py-2 text-sm bg-primary text-white rounded-lg hover:brightness-90"
         >
           View Trip Details

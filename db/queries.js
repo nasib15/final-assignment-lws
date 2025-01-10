@@ -10,7 +10,7 @@ import {
 } from "@/utils/data-utils";
 
 // get all hotels for the current page with pagination and search
-export async function getAllHotels(page = 1, query, limit = 8) {
+export async function getAllHotels(page = 1, query = "", limit = 8) {
   await dbConnect();
 
   // skip value
@@ -45,7 +45,7 @@ export async function getHotelById(id) {
 }
 
 // get user id by email
-export async function getUserByEmail(email) {
+export async function getUserIdByEmail(email) {
   await dbConnect();
 
   const user = await userModel?.findOne({ email }).lean();
@@ -87,15 +87,14 @@ export async function getUserReview(hotelId, userId) {
 }
 
 // get booking details
-export async function getOneBookingDetails(hotelId, userId, checkin, checkout) {
+export async function getOneBookingDetails(hotelId, userId, bookedAt) {
   await dbConnect();
 
   const booking = await bookingModel
     ?.findOne({
       hotelId,
       userId,
-      checkin,
-      checkout,
+      bookedAt,
     })
     ?.lean();
 
@@ -111,11 +110,37 @@ export async function getUserBookings(userId) {
   return replaceMongoIdInArray(bookings);
 }
 
+// get confirmed bookings
+export async function getConfirmedBookings(userId) {
+  await dbConnect();
+
+  const bookings = await bookingModel
+    ?.find({ userId, bookingStatus: "confirmed" })
+    ?.lean();
+
+  return replaceMongoIdInArray(bookings);
+}
+
+// get pending bookings
+export async function getPendingBookings(userId) {
+  await dbConnect();
+
+  const bookings = await bookingModel
+    ?.find({ userId, bookingStatus: "pending" })
+    ?.lean();
+
+  return replaceMongoIdInArray(bookings);
+}
+
 // get payment details by booking id
 export async function getPaymentDetails(bookingId) {
   await dbConnect();
 
   const payment = await paymentModel?.findOne({ bookingId })?.lean();
+
+  if (!payment) {
+    return null;
+  }
 
   return replaceMongoIdInObject(payment);
 }

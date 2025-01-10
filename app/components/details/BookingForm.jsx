@@ -95,10 +95,12 @@ const BookingForm = ({
 
     const response = await addBooking(bookingData);
 
+    console.log(response);
+
     if (response.success) {
       toast.success("Booking added successfully");
       router.push(
-        `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.bookingPrice}`
+        `/hotels/checkout/${hotelId}?checkin=${bookingData.checkin}&checkout=${bookingData.checkout}&guests=${bookingData.guests}&totalPrice=${bookingData.bookingPrice}&bookedAt=${response.data.bookedAt}`
       );
     }
   };

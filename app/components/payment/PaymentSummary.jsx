@@ -2,6 +2,7 @@ import { getPaymentDetails } from "@/db/queries";
 
 const PaymentSummary = async ({ bookingId }) => {
   const paymentDetails = await getPaymentDetails(bookingId);
+
   return (
     <div>
       <h3 className="font-semibold mb-4">Payment Summary</h3>

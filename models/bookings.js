@@ -28,7 +28,11 @@ const bookingSchema = new Schema({
   },
   bookedAt: {
     default: Date.now,
-    type: Date,
+    type: String,
+  },
+  bookingStatus: {
+    default: "pending",
+    type: String,
   },
 });
 
