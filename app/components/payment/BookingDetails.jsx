@@ -6,8 +6,9 @@ import { useState } from "react";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import toast from "react-hot-toast";
 
-const BookingDetails = ({ hotelId, pricePerNight, totalGuests }) => {
+const BookingDetails = ({ hotelId, pricePerNight, totalGuests, bookingId }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -15,6 +16,7 @@ const BookingDetails = ({ hotelId, pricePerNight, totalGuests }) => {
   const initialCheckout = searchParams.get("checkout");
   const initialGuests = searchParams.get("guests");
 
+  const [isAvailable, setIsAvailable] = useState(true);
   const [isEditingDates, setIsEditingDates] = useState(false);
   const [isEditingGuests, setIsEditingGuests] = useState(false);
   const [dateRange, setDateRange] = useState([
@@ -36,17 +38,45 @@ const BookingDetails = ({ hotelId, pricePerNight, totalGuests }) => {
     updateURL(dateRange[0].startDate, dateRange[0].endDate, newCount);
   };
 
-  const updateURL = (checkin, checkout, guests) => {
-    const nights = differenceInDays(new Date(checkout), new Date(checkin));
-    const newTotalPrice = Number(pricePerNight) * Number(nights);
+  const updateURL = async (checkin, checkout, guests) => {
+    try {
+      // Check availability with bookingId
+      const response = await fetch("/api/hotels/check-availability", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hotelId,
+          checkin: checkin.toISOString(),
+          checkout: checkout.toISOString(),
+          bookingId,
+        }),
+      });
 
-    const params = new URLSearchParams(searchParams);
-    params.set("checkin", checkin.toISOString());
-    params.set("checkout", checkout.toISOString());
-    params.set("guests", guests);
-    params.set("totalPrice", newTotalPrice);
+      const data = await response.json();
 
-    router.replace(`/hotels/checkout/${hotelId}?${params.toString()}`);
+      if (!data.available) {
+        toast.error("Dates are not available");
+        setIsAvailable(false);
+        return;
+      }
+
+      const nights = differenceInDays(new Date(checkout), new Date(checkin));
+      const newTotalPrice = Number(pricePerNight) * Number(nights);
+
+      const params = new URLSearchParams(searchParams);
+      params.set("checkin", checkin.toISOString());
+      params.set("checkout", checkout.toISOString());
+      params.set("guests", guests);
+      params.set("totalPrice", newTotalPrice);
+
+      setIsAvailable(true);
+
+      router.replace(`/hotels/checkout/${hotelId}?${params.toString()}`);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   };
 
   return (
@@ -90,7 +120,8 @@ const BookingDetails = ({ hotelId, pricePerNight, totalGuests }) => {
           </div>
           <button
             onClick={() => setIsEditingDates(!isEditingDates)}
-            className="text-zinc-800 underline text-sm"
+            className="text-zinc-800 underline text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!isAvailable}
           >
             {isEditingDates ? "Done" : "Edit"}
           </button>

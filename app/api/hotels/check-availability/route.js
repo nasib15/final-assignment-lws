@@ -3,15 +3,20 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const { hotelId, checkin, checkout } = await request.json();
+    const { hotelId, checkin, checkout, bookingId } = await request.json();
 
-    const isAvailable = await checkDateAvailability(hotelId, checkin, checkout);
+    const isAvailable = await checkDateAvailability(
+      hotelId,
+      checkin,
+      checkout,
+      bookingId
+    );
 
     return NextResponse.json({ available: isAvailable });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to check availability" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

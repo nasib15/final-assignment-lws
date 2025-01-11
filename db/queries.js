@@ -184,16 +184,25 @@ export async function updateHotel(id, hotelData) {
 }
 
 // Check if dates are available for booking
-export async function checkDateAvailability(hotelId, checkin, checkout) {
+export async function checkDateAvailability(
+  hotelId,
+  checkin,
+  checkout,
+  bookingId = null
+) {
   await dbConnect();
 
-  const overlappingBookings = await bookingModel
-    .find({
-      hotelId,
-      checkin: { $lte: checkout },
-      checkout: { $gte: checkin },
-    })
-    .lean();
+  const query = {
+    hotelId,
+    checkin: { $lte: checkout },
+    checkout: { $gte: checkin },
+  };
+
+  if (bookingId) {
+    query._id = { $ne: bookingId };
+  }
+
+  const overlappingBookings = await bookingModel.find(query).lean();
 
   return overlappingBookings.length === 0;
 }

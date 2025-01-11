@@ -46,6 +46,7 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
               hotelId={id}
               pricePerNight={hotelDetails.pricePerNight}
               totalGuests={hotelDetails.totalGuests}
+              bookingId={bookingId}
             />
           </Suspense>
 

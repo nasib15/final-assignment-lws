@@ -135,7 +135,11 @@ const PaymentFormWrapper = ({
         });
 
         if (!emailResponse.ok) {
-          console.error("Failed to send email");
+          setErrors({
+            submit: "Payment failed. Please try again.",
+          });
+          setIsSubmitting(false);
+          return;
         }
 
         // Reset form

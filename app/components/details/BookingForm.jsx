@@ -95,8 +95,6 @@ const BookingForm = ({
 
     const response = await addBooking(bookingData);
 
-    console.log(response);
-
     if (response.success) {
       toast.success("Booking added successfully");
       router.push(
