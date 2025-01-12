@@ -8,7 +8,12 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import toast from "react-hot-toast";
 
-const BookingDetails = ({ hotelId, pricePerNight, totalGuests, bookingId }) => {
+const BookingDetails = ({
+  hotelId,
+  pricePerNight,
+  totalGuests,
+  isAvailable,
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -16,7 +21,6 @@ const BookingDetails = ({ hotelId, pricePerNight, totalGuests, bookingId }) => {
   const initialCheckout = searchParams.get("checkout");
   const initialGuests = searchParams.get("guests");
 
-  const [isAvailable, setIsAvailable] = useState(true);
   const [isEditingDates, setIsEditingDates] = useState(false);
   const [isEditingGuests, setIsEditingGuests] = useState(false);
   const [dateRange, setDateRange] = useState([
@@ -40,28 +44,6 @@ const BookingDetails = ({ hotelId, pricePerNight, totalGuests, bookingId }) => {
 
   const updateURL = async (checkin, checkout, guests) => {
     try {
-      // Check availability with bookingId
-      const response = await fetch("/api/hotels/check-availability", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          hotelId,
-          checkin: checkin.toISOString(),
-          checkout: checkout.toISOString(),
-          bookingId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!data.available) {
-        toast.error("Dates are not available");
-        setIsAvailable(false);
-        return;
-      }
-
       const nights = differenceInDays(new Date(checkout), new Date(checkin));
       const newTotalPrice = Number(pricePerNight) * Number(nights);
 
@@ -71,7 +53,11 @@ const BookingDetails = ({ hotelId, pricePerNight, totalGuests, bookingId }) => {
       params.set("guests", guests);
       params.set("totalPrice", newTotalPrice);
 
-      setIsAvailable(true);
+      if (!isAvailable) {
+        toast.error(
+          "Selected dates are not available. Please choose another date."
+        );
+      }
 
       router.replace(`/hotels/checkout/${hotelId}?${params.toString()}`);
     } catch (error) {
@@ -121,7 +107,6 @@ const BookingDetails = ({ hotelId, pricePerNight, totalGuests, bookingId }) => {
           <button
             onClick={() => setIsEditingDates(!isEditingDates)}
             className="text-zinc-800 underline text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!isAvailable}
           >
             {isEditingDates ? "Done" : "Edit"}
           </button>

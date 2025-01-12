@@ -6,6 +6,7 @@ import PaymentFormWrapper from "@/app/components/payment/PaymentFormWrapper";
 import PriceDetails from "@/app/components/payment/PriceDetails";
 import { auth } from "@/auth";
 import {
+  checkDateAvailability,
   getHotelById,
   getReviewsByHotelId,
   getUserIdByEmail,
@@ -33,6 +34,13 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
   // get booking id
   const bookingId = await findBookingId(id, authUserId, bookedAt);
 
+  const isAvailable = await checkDateAvailability(
+    id,
+    checkin,
+    checkout,
+    bookingId
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-6 py-8">
       <div className="mb-8">
@@ -46,7 +54,7 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
               hotelId={id}
               pricePerNight={hotelDetails.pricePerNight}
               totalGuests={hotelDetails.totalGuests}
-              bookingId={bookingId}
+              isAvailable={isAvailable}
             />
           </Suspense>
 
@@ -61,6 +69,7 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
             hotelDetails={hotelDetails}
             bookingId={bookingId}
             bookedAt={bookedAt}
+            isAvailable={isAvailable}
           />
         </div>
 

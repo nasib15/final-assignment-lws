@@ -20,6 +20,7 @@ const PaymentFormWrapper = ({
   hotelDetails,
   bookingId,
   bookedAt,
+  isAvailable,
 }) => {
   const [formData, setFormData] = useState({
     cardNumber: "",
@@ -275,7 +276,7 @@ const PaymentFormWrapper = ({
       {/* Submit Button */}
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || !isAvailable}
         className="w-full block text-center bg-primary text-white py-3 rounded-lg mt-6 hover:brightness-90 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "Processing..." : "Request to book"}
