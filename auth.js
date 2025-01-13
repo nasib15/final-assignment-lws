@@ -7,6 +7,7 @@ import { authConfig } from "./auth.config";
 import dbConnect from "./lib/dbConnect";
 import mongoClientPromise from "./lib/mongoPromise";
 import { userModel } from "./models/users";
+import { generateAccessToken, generateRefreshToken } from "./utils/tokens";
 
 export const {
   auth,
@@ -25,6 +26,8 @@ export const {
         password: {},
       },
       async authorize(credentials) {
+        if (credentials == null) return null;
+
         await dbConnect();
 
         try {
@@ -40,7 +43,21 @@ export const {
             throw new Error("Invalid password");
           }
 
-          return user;
+          // generate access and refresh tokens
+          const accessToken = generateAccessToken(user);
+          const refreshToken = generateRefreshToken(user);
+
+          // save the tokens in the user document
+          await userModel.findByIdAndUpdate(user._id, {
+            accessToken,
+            refreshToken,
+          });
+
+          return {
+            accessToken,
+            refreshToken,
+            user,
+          };
         } catch (error) {
           throw new Error(error);
         }
@@ -49,6 +66,7 @@ export const {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
           prompt: "consent",

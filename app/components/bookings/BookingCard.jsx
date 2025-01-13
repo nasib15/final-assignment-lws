@@ -8,7 +8,8 @@ import DownloadBtn from "./DownloadBtn";
 const BookingCard = async ({ booking }) => {
   const { hotelId } = booking;
   const hotelDetails = await getHotelById(hotelId.toString());
-  const { user: authUser } = await auth();
+  const session = await auth();
+  const authUser = session?.user;
 
   // booking details
   const { id, checkin, checkout, guests, bookedAt } = booking;

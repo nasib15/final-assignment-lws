@@ -17,7 +17,8 @@ import { Suspense } from "react";
 
 const PaymentPage = async ({ params: { id }, searchParams }) => {
   const hotelDetails = await getHotelById(id);
-  const { user: authUser } = await auth();
+  const session = await auth();
+  const authUser = session?.user;
   const authUserId = await getUserIdByEmail(authUser.email);
 
   const hotelReviews = await getReviewsByHotelId(id);

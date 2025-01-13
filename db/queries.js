@@ -52,7 +52,7 @@ export async function getUserIdByEmail(email) {
 
   const userDetails = replaceMongoIdInObject(user);
 
-  return userDetails.id;
+  return userDetails?.id;
 }
 
 // get user by id

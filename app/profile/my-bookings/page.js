@@ -9,7 +9,8 @@ import {
 } from "@/db/queries";
 
 const MyBookingsPage = async () => {
-  const { user: authUser } = await auth();
+  const session = await auth();
+  const authUser = session?.user;
   const authUserId = await getUserIdByEmail(authUser?.email);
   const pendingBookings = await getPendingBookings(authUserId);
   const confirmedBookings = await getConfirmedBookings(authUserId);

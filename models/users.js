@@ -17,6 +17,14 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
+  accessToken: {
+    type: String,
+    required: false,
+  },
+  refreshToken: {
+    type: String,
+    required: false,
+  },
 });
 
 export const userModel =

@@ -16,7 +16,8 @@ const SuccessPage = async ({ params: { id }, searchParams }) => {
   const hotelDetails = await getHotelById(id);
   const { checkin, checkout, guests, bookedAt } = searchParams;
 
-  const { user: authUser } = await auth();
+  const session = await auth();
+  const authUser = session?.user;
   const authUserId = await getUserIdByEmail(authUser.email);
 
   const bookingId = await findBookingId(id, authUserId, bookedAt);

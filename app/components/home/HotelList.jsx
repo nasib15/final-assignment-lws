@@ -15,8 +15,9 @@ const HotelList = async ({ searchParams }) => {
   const query = searchParams?.query || "";
   const { hotels, totalPages, currentPage } = await getAllHotels(page, query);
 
-  const { user: authUser } = await auth();
-  const authUserId = await getUserIdByEmail(authUser.email);
+  const session = await auth();
+  const authUser = session?.user;
+  const authUserId = await getUserIdByEmail(authUser?.email);
   const pendingBookings = await getPendingBookings(authUserId);
 
   return (

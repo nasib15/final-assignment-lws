@@ -5,7 +5,8 @@ import { getUserHotels } from "@/db/queries";
 import Link from "next/link";
 
 const ManageHotelsPage = async () => {
-  const { user: authUser } = await auth();
+  const session = await auth();
+  const authUser = session?.user;
   const authUserName = authUser?.name;
 
   const userHotels = await getUserHotels(authUserName);
