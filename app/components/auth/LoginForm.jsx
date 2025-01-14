@@ -1,11 +1,13 @@
 "use client";
 
 import { login } from "@/app/actions/auth";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const LoginForm = () => {
   const router = useRouter();
+  const { update } = useSession();
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
@@ -19,11 +21,10 @@ const LoginForm = () => {
 
       const response = await login({ email, password });
 
-      console.log(response);
-
       if (response) {
         setError("Invalid email or password");
       } else {
+        await update();
         router.push("/");
       }
     } catch (error) {

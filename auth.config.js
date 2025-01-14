@@ -1,4 +1,8 @@
-import { refreshAccessTokenCredentials } from "./utils/tokens";
+import {
+    generateAccessToken,
+    generateRefreshToken,
+    refreshAccessTokenCredentials,
+} from "./utils/tokens";
 
 async function refreshAccessToken(token) {
   try {
@@ -20,6 +24,8 @@ async function refreshAccessToken(token) {
 
     const refreshedTokens = await response.json();
 
+    console.log(refreshedTokens, "refesh gugol");
+
     if (!response.ok) {
       throw refreshedTokens;
     }
@@ -27,7 +33,7 @@ async function refreshAccessToken(token) {
     return {
       ...token,
       accessToken: refreshedTokens?.access_token,
-      accessTokenExpires: Date.now() + refreshedTokens?.expires_in * 1000,
+      accessTokenExpires: Date.now() + 15 * 1000,
       refreshToken: refreshedTokens?.refresh_token,
     };
   } catch (error) {
@@ -41,18 +47,18 @@ async function refreshAccessToken(token) {
 export const authConfig = {
   session: {
     strategy: "jwt",
-    maxAge: 60 * 60,
+    maxAge: 60,
   },
   providers: [],
   callbacks: {
     async jwt({ token, user, account }) {
-      // console.log("token", token);
       if (account && user) {
         return {
-          accessToken: account?.access_token,
-          accessTokenExpires: Date.now() + 60 * 60 * 1000,
-          refreshToken: account?.refresh_token,
+          accessToken: account?.access_token || generateAccessToken(user),
+          accessTokenExpires: Date.now() + 15 * 1000,
+          refreshToken: account?.refresh_token || generateRefreshToken(user),
           user,
+          provider: account?.provider,
         };
       }
 
@@ -64,7 +70,7 @@ export const authConfig = {
       const accessTokenExpiry = token.accessTokenExpires;
 
       if (accessTokenExpiry && Date.now() > accessTokenExpiry) {
-        if (account?.provider === "google") {
+        if (token?.provider === "google") {
           try {
             return await refreshAccessToken(token);
           } catch (error) {
@@ -72,18 +78,18 @@ export const authConfig = {
           }
         }
 
-        if (account?.provider === "credentials") {
+        if (token?.provider === "credentials") {
           try {
             // Attempt to refresh the token
             const response = await refreshAccessTokenCredentials(
-              token.refreshToken
+              token.refreshToken,
             );
 
             return {
               ...token,
               accessToken: response.accessToken,
               refreshToken: response.refreshToken,
-              accessTokenExpires: Date.now() + 60 * 60 * 1000, // 1 hour
+              accessTokenExpires: Date.now() + 15 * 1000, // 1 hour
             };
           } catch (error) {
             return { ...token, error: "RefreshAccessTokenError" };
@@ -95,6 +101,9 @@ export const authConfig = {
     async session({ session, token }) {
       session.user = token?.user;
       session.error = token?.error;
+      session.accessToken = token?.accessToken;
+      session.refreshToken = token?.refreshToken;
+      session.accessTokenExpires = token?.accessTokenExpires;
 
       console.log("session", session);
 

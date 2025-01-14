@@ -40,6 +40,7 @@ const signInState = [
 const NavbarMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data } = useSession();
+  console.log(data);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 

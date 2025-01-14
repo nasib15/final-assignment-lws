@@ -7,7 +7,7 @@ import { authConfig } from "./auth.config";
 import dbConnect from "./lib/dbConnect";
 import mongoClientPromise from "./lib/mongoPromise";
 import { userModel } from "./models/users";
-import { generateAccessToken, generateRefreshToken } from "./utils/tokens";
+import { replaceMongoIdInObject } from "./utils/data-utils";
 
 export const {
   auth,
@@ -31,7 +31,9 @@ export const {
         await dbConnect();
 
         try {
-          const user = await userModel.findOne({ email: credentials.email });
+          const user = await userModel
+            .findOne({ email: credentials.email })
+            .lean();
 
           if (!user) {
             throw new Error("User not found");
@@ -43,20 +45,22 @@ export const {
             throw new Error("Invalid password");
           }
 
-          // generate access and refresh tokens
-          const accessToken = generateAccessToken(user);
-          const refreshToken = generateRefreshToken(user);
+          // // generate access and refresh tokens
+          // const accessToken = generateAccessToken(user);
+          // const refreshToken = generateRefreshToken(user);
 
-          // save the tokens in the user document
-          await userModel.findByIdAndUpdate(user._id, {
-            accessToken,
-            refreshToken,
-          });
+          // // save the tokens in the user document
+          // const response = await userModel
+          //   .findByIdAndUpdate(user._id, {
+          //     accessToken,
+          //     refreshToken,
+          //   })
+          //   .lean();
+
+          // const userData = replaceMongoIdInObject(response);
 
           return {
-            accessToken,
-            refreshToken,
-            user,
+            ...replaceMongoIdInObject(user),
           };
         } catch (error) {
           throw new Error(error);
