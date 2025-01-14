@@ -1,7 +1,7 @@
 import {
-    generateAccessToken,
-    generateRefreshToken,
-    refreshAccessTokenCredentials,
+  generateAccessToken,
+  generateRefreshToken,
+  refreshAccessTokenCredentials,
 } from "./utils/tokens";
 
 async function refreshAccessToken(token) {
@@ -24,8 +24,6 @@ async function refreshAccessToken(token) {
 
     const refreshedTokens = await response.json();
 
-    console.log(refreshedTokens, "refesh gugol");
-
     if (!response.ok) {
       throw refreshedTokens;
     }
@@ -33,8 +31,8 @@ async function refreshAccessToken(token) {
     return {
       ...token,
       accessToken: refreshedTokens?.access_token,
-      accessTokenExpires: Date.now() + 15 * 1000,
-      refreshToken: refreshedTokens?.refresh_token,
+      accessTokenExpires: Date.now() + 60 * 60 * 1000,
+      refreshToken: refreshedTokens?.refresh_token || token?.refreshToken,
     };
   } catch (error) {
     return {
@@ -47,7 +45,7 @@ async function refreshAccessToken(token) {
 export const authConfig = {
   session: {
     strategy: "jwt",
-    maxAge: 60,
+    maxAge: 60 * 60 * 24,
   },
   providers: [],
   callbacks: {
@@ -55,7 +53,7 @@ export const authConfig = {
       if (account && user) {
         return {
           accessToken: account?.access_token || generateAccessToken(user),
-          accessTokenExpires: Date.now() + 15 * 1000,
+          accessTokenExpires: Date.now() + 60 * 60 * 1000,
           refreshToken: account?.refresh_token || generateRefreshToken(user),
           user,
           provider: account?.provider,
@@ -89,7 +87,7 @@ export const authConfig = {
               ...token,
               accessToken: response.accessToken,
               refreshToken: response.refreshToken,
-              accessTokenExpires: Date.now() + 15 * 1000, // 1 hour
+              accessTokenExpires: Date.now() + 60 * 60 * 1000, // 1 hour
             };
           } catch (error) {
             return { ...token, error: "RefreshAccessTokenError" };
@@ -104,8 +102,6 @@ export const authConfig = {
       session.accessToken = token?.accessToken;
       session.refreshToken = token?.refreshToken;
       session.accessTokenExpires = token?.accessTokenExpires;
-
-      console.log("session", session);
 
       return session;
     },

@@ -45,20 +45,6 @@ export const {
             throw new Error("Invalid password");
           }
 
-          // // generate access and refresh tokens
-          // const accessToken = generateAccessToken(user);
-          // const refreshToken = generateRefreshToken(user);
-
-          // // save the tokens in the user document
-          // const response = await userModel
-          //   .findByIdAndUpdate(user._id, {
-          //     accessToken,
-          //     refreshToken,
-          //   })
-          //   .lean();
-
-          // const userData = replaceMongoIdInObject(response);
-
           return {
             ...replaceMongoIdInObject(user),
           };
