@@ -26,8 +26,10 @@
 
 # Extra Features:
 
-- Implemented My Wishlist for hotels so that users can save their favorite hotels.
-- Implemented a pending payment feature so that users can book a hotel before the payment is confirmed.
+- Implemented bookmarks for hotels.
+
+- Implemented a pending payment feature so that users can pay for hotels later.
+
 - Implemented sorting (asc, desc) options for hotels prices.
 
 # Requirements:
