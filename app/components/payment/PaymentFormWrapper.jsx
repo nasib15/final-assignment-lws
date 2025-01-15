@@ -135,8 +135,6 @@ const PaymentFormWrapper = ({
           }),
         });
 
-        console.log(emailResponse);
-
         if (!emailResponse.ok) {
           setErrors({
             submit: "Payment failed. Please try again.",
