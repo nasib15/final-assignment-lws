@@ -6,23 +6,28 @@
 
 1. User1:
    - Email: user1@example.com
-   - Password: userone1234
+   - Password: user1234
 
 2. User2:
    - Email: user2@example.com
-   - Password: usertwo1234
+   - Password: user1234
 
 3. User3:
    - Email: user3@example.com
-   - Password: userthree1234
+   - Password: user1234
 
 4. User4:
    - Email: user4@example.com
-   - Password: userfour1234
+   - Password: user1234
 
 5. User5:
    - Email: user5@example.com
-   - Password: userfive1234
+   - Password: user1234
+
+# Extra Features:
+
+- Implemented My Wishlist for hotels so that users can save their favorite hotels.
+- Implemented a pending payment feature so that users can book a hotel before the payment is confirmed.
 
 # Requirements:
 

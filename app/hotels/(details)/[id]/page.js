@@ -19,7 +19,6 @@ const HotelDetailsPage = async ({ params: { id } }) => {
 
   // get authenticated user details
   const authSession = await auth();
-  console.log(authSession, "authSession");
   const authUser = authSession?.user;
   const authUserId = authUser ? await getUserIdByEmail(authUser?.email) : null;
 

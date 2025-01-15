@@ -4,6 +4,7 @@ import { hotelModel } from "@/models/hotels";
 import { paymentModel } from "@/models/payment";
 import { reviewModel } from "@/models/reviews";
 import { userModel } from "@/models/users";
+import { wishlistModel } from "@/models/wishlists";
 import {
   replaceMongoIdInArray,
   replaceMongoIdInObject,
@@ -188,7 +189,7 @@ export async function checkDateAvailability(
   hotelId,
   checkin,
   checkout,
-  bookingId = null
+  bookingId = null,
 ) {
   await dbConnect();
 
@@ -205,4 +206,45 @@ export async function checkDateAvailability(
   const overlappingBookings = await bookingModel.find(query).lean();
 
   return overlappingBookings.length === 0;
+}
+
+// get all wishlist for a user
+export async function getUserWishlist(userId) {
+  await dbConnect();
+
+  const wishlists = await wishlistModel?.find({ userId })?.lean();
+
+  return replaceMongoIdInArray(wishlists);
+}
+
+// Check if hotel is in wishlist
+export async function isHotelInWishlist(userId, hotelId) {
+  await dbConnect();
+
+  const wishlistItem = await wishlistModel
+    ?.findOne({ userId, hotelId })
+    ?.lean();
+
+  return !!wishlistItem;
+}
+
+// add wishlist
+export async function addToWishlist(userId, hotelId) {
+  await dbConnect();
+
+  const wishlist = await wishlistModel?.create({ hotelId, userId });
+
+  return replaceMongoIdInObject(wishlist);
+}
+
+// delete wishlist
+export async function removeFromWishlist(userId, hotelId) {
+  await dbConnect();
+
+  const wishlist = await wishlistModel?.findOneAndDelete(
+    { hotelId, userId },
+    { new: true },
+  );
+
+  return replaceMongoIdInObject(wishlist);
 }

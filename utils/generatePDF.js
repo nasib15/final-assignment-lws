@@ -53,7 +53,7 @@ export async function generateBookingPDF(bookingData) {
 
       doc.addImage(pngBase64, "SVG", 15, 10, logoWidth, logoHeight);
     } catch (error) {
-      console.error("Error adding logo:", error);
+      throw new Error("Error adding logo:", error);
     }
 
     // Accent bar
@@ -127,13 +127,13 @@ export async function generateBookingPDF(bookingData) {
     doc.text(
       new Date(bookingData.checkin).toLocaleDateString(),
       col1 + 25,
-      y + 8
+      y + 8,
     );
     doc.text("Check-out:", col2, y + 8);
     doc.text(
       new Date(bookingData.checkout).toLocaleDateString(),
       col2 + 25,
-      y + 8
+      y + 8,
     );
 
     // Nights/Guests
@@ -179,13 +179,13 @@ export async function generateBookingPDF(bookingData) {
     doc.text(
       `Room Rate (${bookingData.nights} nights × $${bookingData.pricePerNight})`,
       45,
-      startY
+      startY,
     );
     doc.text(
       `$${bookingData.nights * bookingData.pricePerNight}`,
       160,
       startY,
-      { align: "right" }
+      { align: "right" },
     );
 
     doc.text("Cleaning Fee", 45, startY + 8);
@@ -225,12 +225,11 @@ export async function generateBookingPDF(bookingData) {
     doc.text(
       `Tel: ${bookingData.hotelPhone} | Email: ${bookingData.hotelEmail}`,
       15,
-      y + 10
+      y + 10,
     );
 
     return doc.output("blob");
   } catch (error) {
-    console.error("PDF Generation Error:", error);
     throw new Error("Failed to generate PDF");
   }
 }

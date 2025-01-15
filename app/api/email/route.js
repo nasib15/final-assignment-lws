@@ -27,10 +27,10 @@ export async function POST(request) {
             <h2 style="color: #009688; margin-top: 0;">Booking Details</h2>
             <p><strong>Hotel:</strong> ${bookingData.hotelName}</p>
             <p><strong>Check-in:</strong> ${new Date(
-              bookingData.checkin
+              bookingData.checkin,
             ).toLocaleDateString()}</p>
             <p><strong>Check-out:</strong> ${new Date(
-              bookingData.checkout
+              bookingData.checkout,
             ).toLocaleDateString()}</p>
             <p><strong>Guests:</strong> ${bookingData.guests}</p>
             <p><strong>Total Amount:</strong> $${bookingData.totalPrice}</p>
@@ -61,10 +61,9 @@ export async function POST(request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Email sending failed:", error);
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

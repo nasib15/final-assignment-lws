@@ -3,6 +3,7 @@ import {
   getAllHotels,
   getPendingBookings,
   getUserIdByEmail,
+  isHotelInWishlist,
 } from "@/db/queries";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -60,9 +61,21 @@ const HotelList = async ({ searchParams }) => {
         {hotels.length > 0 ? (
           <>
             <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {hotels.map((hotel) => (
-                <HotelCard key={hotel.id} hotel={hotel} />
-              ))}
+              {hotels.map(async (hotel) => {
+                const isWishlisted = await isHotelInWishlist(
+                  authUserId,
+                  hotel.id,
+                );
+
+                return (
+                  <HotelCard
+                    key={hotel.id}
+                    hotel={hotel}
+                    authUserId={authUserId}
+                    isWishlisted={isWishlisted}
+                  />
+                );
+              })}
             </div>
             <Suspense fallback={<div>Loading...</div>}>
               <Pagination totalPages={totalPages} currentPage={currentPage} />

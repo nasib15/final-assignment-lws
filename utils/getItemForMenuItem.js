@@ -10,6 +10,8 @@ export const getIconForMenuItem = (itemName) => {
       return "fas fa-sign-in-alt";
     case "Signup":
       return "fas fa-user-plus";
+    case "My Wishlist":
+      return "fas fa-heart";
     default:
       return "fas fa-circle";
   }

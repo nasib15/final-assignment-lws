@@ -35,12 +35,16 @@ const signInState = [
     path: "/profile/my-bookings",
     name: "My Bookings",
   },
+  {
+    id: 4,
+    path: "/profile/my-wishlist",
+    name: "My Wishlist",
+  },
 ];
 
 const NavbarMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data } = useSession();
-  console.log(data);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
