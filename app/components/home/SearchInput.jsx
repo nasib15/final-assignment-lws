@@ -8,11 +8,14 @@ const SearchInput = () => {
   const searchParams = useSearchParams();
 
   const doSearch = useDebounce((term) => {
+    const params = new URLSearchParams(searchParams);
     if (term) {
-      router.replace(`/?page=1&query=${encodeURIComponent(term)}`);
+      params.set("query", term);
     } else {
-      router.replace("?page=1");
+      params.delete("query");
     }
+    params.set("page", "1");
+    router.replace(`/?${params.toString()}`);
   }, 500);
 
   return (

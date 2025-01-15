@@ -10,11 +10,18 @@ import { Suspense } from "react";
 import FallbackUIHotelList from "./FallbackUIHotelList";
 import HotelCard from "./HotelCard";
 import Pagination from "./Pagination";
+import SortingDropdown from "./SortingDropdown";
 
 const HotelList = async ({ searchParams }) => {
   const page = Number(searchParams?.page) || 1;
   const query = searchParams?.query || "";
-  const { hotels, totalPages, currentPage } = await getAllHotels(page, query);
+  const sort = searchParams?.sort || "";
+
+  const { hotels, totalPages, currentPage } = await getAllHotels(
+    page,
+    query,
+    sort,
+  );
 
   const session = await auth();
   const authUser = session?.user;
@@ -24,19 +31,24 @@ const HotelList = async ({ searchParams }) => {
   return (
     <>
       <section className="px-6">
-        {/* Search Results Count */}
-        {query && (
-          <div className="max-w-7xl mx-auto mb-6">
-            <p className="text-gray-600">
-              {hotels.length === 0
-                ? "No results found"
-                : `${hotels.length} ${
-                    hotels.length === 1 ? "hotel" : "hotels"
-                  } found`}{" "}
-              for &quot;{query}&quot;
-            </p>
+        {/* Search Results Count and Sorting */}
+        <div className="max-w-7xl mx-auto mb-6 flex items-center justify-between">
+          <div className="flex justify-between items-center">
+            {query && (
+              <p className="text-gray-600">
+                {hotels.length === 0
+                  ? "No results found"
+                  : `${hotels.length} ${
+                      hotels.length === 1 ? "hotel" : "hotels"
+                    } found`}{" "}
+                for &quot;{query}&quot;
+              </p>
+            )}
           </div>
-        )}
+          <div className="flex justify-end gap-4">
+            <SortingDropdown />
+          </div>
+        </div>
 
         {pendingBookings.length > 0 && (
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 max-w-4xl mx-auto">

@@ -19,7 +19,7 @@ const hotelSchema = new Schema({
   },
   pricePerNight: {
     required: true,
-    type: String,
+    type: Number,
   },
   totalGuests: {
     required: true,

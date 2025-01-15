@@ -11,15 +11,29 @@ import {
 } from "@/utils/data-utils";
 
 // get all hotels for the current page with pagination and search
-export async function getAllHotels(page = 1, query = "", limit = 8) {
+export async function getAllHotels(page = 1, query = "", sort = "", limit = 8) {
   await dbConnect();
 
   // skip value
   const skip = (page - 1) * limit;
 
+  // Create sort object based on sort parameter
+  let sortObject = {};
+  switch (sort) {
+    case "price_asc":
+      sortObject = { pricePerNight: 1 };
+      break;
+    case "price_desc":
+      sortObject = { pricePerNight: -1 };
+      break;
+    default:
+      sortObject = {};
+  }
+
   // Hotels for the current page
   const hotels = await hotelModel
     ?.find({ name: { $regex: query, $options: "i" } })
+    ?.sort(sortObject)
     ?.skip(skip)
     ?.limit(limit)
     ?.lean();
