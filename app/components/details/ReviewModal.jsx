@@ -6,19 +6,46 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 const ReviewModal = ({ onClose, hotelId, authUserId }) => {
-  const [rating, setRating] = useState(0);
+  const [formData, setFormData] = useState({
+    rating: 0,
+    review: "",
+  });
+  const [error, setError] = useState(null);
   const [hoveredRating, setHoveredRating] = useState(0);
-  const [review, setReview] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
+
+  const validateForm = () => {
+    // Reset previous errors
+    setError("");
+
+    if (!formData.rating) {
+      setError("Please select a rating");
+      return false;
+    }
+
+    if (!formData.review.trim()) {
+      setError("Please write a review");
+      return false;
+    }
+
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
     try {
       const reviewData = {
-        ratings: rating,
-        review,
+        ratings: formData.rating,
+        review: formData.review.trim(),
         userId: authUserId,
         hotelId,
       };
@@ -31,8 +58,28 @@ const ReviewModal = ({ onClose, hotelId, authUserId }) => {
         router.refresh();
       }
     } catch (error) {
-      throw new Error(error.message);
+      setError("Failed to submit review. Please try again.");
+      toast.error("Failed to submit review");
+    } finally {
+      setIsSubmitting(false);
     }
+  };
+
+  const handleRatingClick = (rating) => {
+    setFormData((prev) => ({
+      ...prev,
+      rating,
+    }));
+    setError("");
+  };
+
+  const handleReviewChange = (e) => {
+    const review = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      review,
+    }));
+    setError("");
   };
 
   return (
@@ -64,11 +111,11 @@ const ReviewModal = ({ onClose, hotelId, authUserId }) => {
                     className="text-2xl transition-colors duration-200"
                     onMouseEnter={() => setHoveredRating(star)}
                     onMouseLeave={() => setHoveredRating(0)}
-                    onClick={() => setRating(star)}
+                    onClick={() => handleRatingClick(star)}
                   >
                     <i
                       className={`fas fa-star ${
-                        star <= (hoveredRating || rating)
+                        star <= (hoveredRating || formData.rating)
                           ? "text-yellow-500"
                           : "text-gray-300"
                       }`}
@@ -84,11 +131,14 @@ const ReviewModal = ({ onClose, hotelId, authUserId }) => {
               </label>
               <textarea
                 rows="4"
-                value={review}
-                onChange={(e) => setReview(e.target.value)}
+                value={formData.review}
+                onChange={handleReviewChange}
                 placeholder="Share your experience with other travelers..."
-                className="w-full px-4 py-3 rounded-lg border focus:border-gray-500 focus:ring-0 resize-none transition-all duration-200"
-                required
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  error && !formData.review.trim()
+                    ? "border-red-500 focus:border-red-500"
+                    : "focus:border-gray-500"
+                } focus:ring-0 resize-none transition-all duration-200`}
               ></textarea>
             </div>
 
@@ -104,7 +154,9 @@ const ReviewModal = ({ onClose, hotelId, authUserId }) => {
                 <button
                   type="submit"
                   className="px-4 py-2 bg-primary text-white rounded-lg hover:brightness-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={!rating || !review.trim()}
+                  disabled={
+                    !formData.rating || !formData.review.trim() || isSubmitting
+                  }
                 >
                   Submit Review
                 </button>

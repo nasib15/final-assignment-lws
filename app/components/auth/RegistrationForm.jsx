@@ -3,32 +3,63 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    cpassword: "",
+  });
   const [error, setError] = useState(null);
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const validateForm = () => {
+    // Trim all form values
+    const trimmedValues = Object.keys(formData).reduce((acc, key) => {
+      acc[key] = formData[key].trim();
+      return acc;
+    }, {});
+
+    if (!trimmedValues.username) {
+      setError("Username is required");
+      return false;
+    }
+    if (!trimmedValues.email) {
+      setError("Email is required");
+      return false;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedValues.email)) {
+      setError("Please enter a valid email address");
+      return false;
+    }
+
+    // Password strength validation
+    if (trimmedValues.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return false;
+    }
+
+    // Password match validation
+    if (trimmedValues.password !== trimmedValues.cpassword) {
+      setError("Passwords do not match");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateForm()) {
+      return;
+    }
+
     try {
-      const formData = new FormData(e.target);
-
-      const name = formData.get("username");
-      const email = formData.get("email");
-      const password = formData.get("password");
-      const cpassword = formData.get("cpassword");
-
-      if (password !== cpassword) {
-        setError("Passwords do not match");
-        return;
-      }
-
-      if (password.length < 8) {
-        setError("Password must be at least 8 characters long");
-        return;
-      }
-
       // Handle registration logic
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -36,9 +67,9 @@ const RegistrationForm = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name,
-          email,
-          password,
+          name: formData.username.trim(),
+          email: formData.email.trim(),
+          password: formData.password,
           image:
             "https://img.freepik.com/premium-vector/young-man-avatar-character_24877-9475.jpg?w=1060",
         }),
@@ -49,15 +80,20 @@ const RegistrationForm = () => {
         router.push("/login");
       } else {
         const data = await response.json();
-        if (response.status === 400) {
-          setError(data.message || "Email already exists");
-        } else {
-          setError(response.statusText);
-        }
+        setError(data.message || "Registration failed");
       }
     } catch (error) {
       setError(error.message);
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError("");
   };
 
   return (
@@ -66,23 +102,26 @@ const RegistrationForm = () => {
         type="text"
         placeholder="User Name"
         name="username"
-        className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-        required
+        value={formData.username}
+        onChange={handleChange}
+        className={`w-full border ${error && !formData.username.trim() ? "border-red-500" : "border-gray-300"} rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary`}
       />
       <input
         type="email"
         placeholder="Email"
         name="email"
-        className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-        required
+        value={formData.email}
+        onChange={handleChange}
+        className={`w-full border ${error && !formData.email.trim() ? "border-red-500" : "border-gray-300"} rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary`}
       />
       <div className="relative">
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Password"
           name="password"
-          className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          required
+          value={formData.password}
+          onChange={handleChange}
+          className={`w-full border ${error && !formData.password.trim() ? "border-red-500" : "border-gray-300"} rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary`}
         />
         <button
           type="button"
@@ -101,8 +140,9 @@ const RegistrationForm = () => {
           type={showConfirmPassword ? "text" : "password"}
           placeholder="Confirm Password"
           name="cpassword"
-          className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          required
+          value={formData.cpassword}
+          onChange={handleChange}
+          className={`w-full border ${error && !formData.cpassword.trim() ? "border-red-500" : "border-gray-300"} rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary`}
         />
         <button
           type="button"

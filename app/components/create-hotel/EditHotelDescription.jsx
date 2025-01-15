@@ -48,7 +48,7 @@ const EditHotelDescription = ({ description, onSave }) => {
             />
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
             <p className="text-gray-500 text-sm mt-1">
-              Characters: {tempDescription.length}
+              Characters: {tempDescription?.length}
             </p>
           </div>
           <div className="flex justify-end space-x-2">

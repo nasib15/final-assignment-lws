@@ -6,21 +6,50 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const LoginForm = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const router = useRouter();
   const { update } = useSession();
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
+  const validateForm = () => {
+    const trimmedEmail = formData.email.trim();
+    const trimmedPassword = formData.password.trim();
+
+    if (!trimmedEmail) {
+      setError("Email is required");
+      return false;
+    }
+    if (!trimmedPassword) {
+      setError("Password is required");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      setError("Please enter a valid email address");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    try {
-      const formData = new FormData(e.target);
-      const email = formData.get("email");
-      const password = formData.get("password");
+    if (!validateForm()) {
+      return;
+    }
 
-      const response = await login({ email, password });
+    try {
+      const response = await login({
+        email: formData.email.trim(),
+        password: formData.password,
+      });
 
       if (response) {
         setError("Invalid email or password");
@@ -32,22 +61,34 @@ const LoginForm = () => {
       setError(error);
     }
   };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError(null);
+  };
+
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <input
         type="email"
         name="email"
         placeholder="Email"
-        className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-        required
+        value={formData.email}
+        onChange={handleChange}
+        className={`w-full border ${error && !formData.email.trim() ? "border-red-500" : "border-gray-300"} rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary`}
       />
       <div className="relative">
         <input
           type={showPassword ? "text" : "password"}
           placeholder="Password"
           name="password"
-          className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-          required
+          value={formData.password}
+          onChange={handleChange}
+          className={`w-full border ${error && !formData.password.trim() ? "border-red-500" : "border-gray-300"} rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary`}
         />
         <button
           type="button"
