@@ -101,7 +101,9 @@ const CreateHotelPage = () => {
       });
 
       if (response.ok) {
-        toast.success("Hotel published successfully");
+        toast.success(
+          `Hotel ${isEditMode ? "updated" : "published"} successfully`,
+        );
         router.push("/profile/manage-hotels");
         router.refresh();
       }

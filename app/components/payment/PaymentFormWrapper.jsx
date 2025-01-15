@@ -86,7 +86,7 @@ const PaymentFormWrapper = ({
         checkin,
         checkout,
         guests,
-        bookingId
+        bookingId,
       );
 
       if (paymentResponse.success) {
@@ -135,6 +135,8 @@ const PaymentFormWrapper = ({
           }),
         });
 
+        console.log(emailResponse);
+
         if (!emailResponse.ok) {
           setErrors({
             submit: "Payment failed. Please try again.",
@@ -162,7 +164,7 @@ const PaymentFormWrapper = ({
         router.push(
           `/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${
             Number(totalPrice) + 51.31 + 17.5
-          }&bookedAt=${bookedAt}`
+          }&bookedAt=${bookedAt}`,
         );
       }
     } catch (error) {
