@@ -9,6 +9,7 @@ const LoginForm = () => {
   const router = useRouter();
   const { update } = useSession();
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,15 +41,33 @@ const LoginForm = () => {
         className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
         required
       />
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
-        required
-      />
+      <div className="relative">
+        <input
+          type={showPassword ? "text" : "password"}
+          placeholder="Password"
+          name="password"
+          className="w-full border border-gray-300 rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary"
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+        >
+          {showPassword ? (
+            <i className="fas fa-eye-slash"></i>
+          ) : (
+            <i className="fas fa-eye"></i>
+          )}
+        </button>
+      </div>
 
-      {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
+      {error && (
+        <div className="text-red-500 text-sm mt-2 bg-red-50 p-2 rounded">
+          <i className="fas fa-exclamation-circle mr-2"></i>
+          {error}
+        </div>
+      )}
 
       <button
         type="submit"

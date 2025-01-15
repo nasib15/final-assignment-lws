@@ -44,7 +44,7 @@ const WishlistButton = ({ hotelId, userId, initialIsWishlisted }) => {
         isWishlisted
           ? "bg-primary text-white"
           : "bg-white/80 text-gray-600 hover:bg-primary hover:text-white"
-      } hover:scale-110 transition-all duration-200 z-10`}
+      } hover:scale-110 transition-all duration-200`}
       aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
     >
       <i

@@ -39,7 +39,10 @@ export const {
             throw new Error("User not found");
           }
 
-          const isMatched = bcrypt.compare(credentials.password, user.password);
+          const isMatched = await bcrypt.compare(
+            credentials.password,
+            user.password,
+          );
 
           if (!isMatched) {
             throw new Error("Invalid password");
