@@ -116,8 +116,8 @@
 1. **Clone the repository:**
 
    ```
-   git clone https://github.com/Learn-with-Sumit/batch-2-final-assignment-hotelbooking-nasib15
-   cd batch-2-final-assignment-hotelbooking-nasib15
+   git clone https://github.com/nasib15/final-assignment-lws.git
+   cd final-assignment-lws
    ```
 
 2. **Install the dependencies:**
