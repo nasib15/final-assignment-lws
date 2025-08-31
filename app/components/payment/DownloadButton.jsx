@@ -1,6 +1,4 @@
 "use client";
-
-import { generateBookingPDF } from "@/utils/generatePDF";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -16,7 +14,14 @@ const DownloadButton = ({ bookingData }) => {
     try {
       setIsGenerating(true);
 
-      const pdfBlob = await generateBookingPDF(bookingData);
+      // Generate PDF on server via Puppeteer
+      const resp = await fetch("/api/pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+      if (!resp.ok) throw new Error("PDF generation failed");
+      const pdfBlob = await resp.blob();
 
       // Create URL and trigger download
       const url = URL.createObjectURL(pdfBlob);

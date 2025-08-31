@@ -1,7 +1,6 @@
 "use client";
 
 import { addPayment } from "@/app/actions/payment";
-import { generateBookingPDF } from "@/utils/generatePDF";
 import differenceInDays from "@/utils/getDifferenceInDays";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -86,7 +85,7 @@ const PaymentFormWrapper = ({
         checkin,
         checkout,
         guests,
-        bookingId,
+        bookingId
       );
 
       if (paymentResponse.success) {
@@ -118,11 +117,7 @@ const PaymentFormWrapper = ({
           },
         };
 
-        // Generate PDF
-        const pdfBlob = await generateBookingPDF(bookingData);
-        const pdfBuffer = await pdfBlob.arrayBuffer();
-
-        // Send confirmation email
+        // Send confirmation email (server will generate the PDF)
         const emailResponse = await fetch("/api/email", {
           method: "POST",
           headers: {
@@ -130,8 +125,6 @@ const PaymentFormWrapper = ({
           },
           body: JSON.stringify({
             bookingData,
-            // eslint-disable-next-line no-undef
-            pdfBuffer: Array.from(new Uint8Array(pdfBuffer)),
           }),
         });
 
@@ -162,7 +155,7 @@ const PaymentFormWrapper = ({
         router.push(
           `/hotels/${hotelId}/success?checkin=${checkin}&checkout=${checkout}&guests=${guests}&totalPrice=${
             Number(totalPrice) + 51.31 + 17.5
-          }&bookedAt=${bookedAt}`,
+          }&bookedAt=${bookedAt}`
         );
       }
     } catch (error) {

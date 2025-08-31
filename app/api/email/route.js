@@ -11,7 +11,28 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(request) {
   try {
-    const { bookingData, pdfBuffer } = await request.json();
+    const { bookingData } = await request.json();
+
+    // Generate PDF securely on the server using our API route (avoids large client payloads)
+    const headersList = request.headers;
+    const host = headersList.get("host");
+    const proto = headersList.get("x-forwarded-proto") || "http";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${proto}://${host}`;
+
+    const pdfResp = await fetch(`${baseUrl}/api/pdf`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingData),
+      cache: "no-store",
+    });
+
+    if (!pdfResp.ok) {
+      const err = await pdfResp.text();
+      throw new Error(`Failed to generate PDF: ${err}`);
+    }
+
+    const arrayBuffer = await pdfResp.arrayBuffer();
+    const pdfBuffer = Buffer.from(arrayBuffer);
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -27,10 +48,10 @@ export async function POST(request) {
             <h2 style="color: #009688; margin-top: 0;">Booking Details</h2>
             <p><strong>Hotel:</strong> ${bookingData.hotelName}</p>
             <p><strong>Check-in:</strong> ${new Date(
-              bookingData.checkin,
+              bookingData.checkin
             ).toLocaleDateString()}</p>
             <p><strong>Check-out:</strong> ${new Date(
-              bookingData.checkout,
+              bookingData.checkout
             ).toLocaleDateString()}</p>
             <p><strong>Guests:</strong> ${bookingData.guests}</p>
             <p><strong>Total Amount:</strong> $${bookingData.totalPrice}</p>
@@ -51,7 +72,7 @@ export async function POST(request) {
       attachments: [
         {
           filename: `booking-${bookingData.bookingId}.pdf`,
-          content: Buffer.from(pdfBuffer),
+          content: pdfBuffer,
           contentType: "application/pdf",
         },
       ],
@@ -63,7 +84,7 @@ export async function POST(request) {
   } catch (error) {
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
