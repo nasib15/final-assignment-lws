@@ -3,7 +3,7 @@ import chromium from "@sparticuz/chromium";
 import { NextResponse } from "next/server";
 import puppeteer from "puppeteer-core";
 
-export const runtime = "nodejs"; // ensure Node runtime for Puppeteer
+export const runtime = "edge";
 
 export async function POST(request) {
   try {
