@@ -23,7 +23,7 @@
     "mongoose": "^8.9.2",
     "next": "16.2.2",
     "next-auth": "^5.0.0-beta.25",
-    "nodemailer": "^6.9.16",
+    "nodemailer": "^8.0.4",
     "puppeteer-core": "^24.17.1",
     "react": "^18",
     "react-date-range": "^2.0.1",
