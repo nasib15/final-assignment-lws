@@ -24,7 +24,7 @@
     "next": "16.2.2",
     "next-auth": "^5.0.0-beta.30",
     "nodemailer": "^8.0.4",
-    "puppeteer-core": "^24.17.1",
+    "puppeteer-core": "^25.18.1",
     "react": "^18",
     "react-date-range": "^2.0.1",
     "react-dom": "^18",
