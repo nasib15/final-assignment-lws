@@ -1,6 +1,14 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+const escapeHtml = (value) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -12,6 +20,17 @@ const transporter = nodemailer.createTransport({
 export async function POST(request) {
   try {
     const { bookingData } = await request.json();
+    const safeGuestName = escapeHtml(bookingData?.guestName);
+    const safeHotelName = escapeHtml(bookingData?.hotelName);
+    const safeGuests = escapeHtml(bookingData?.guests);
+    const safeTotalPrice = escapeHtml(bookingData?.totalPrice);
+    const safeBookingId = escapeHtml(String(bookingData?.bookingId ?? "").toUpperCase());
+    const safeCheckin = escapeHtml(
+      new Date(bookingData?.checkin).toLocaleDateString()
+    );
+    const safeCheckout = escapeHtml(
+      new Date(bookingData?.checkout).toLocaleDateString()
+    );
 
     // Generate PDF securely on the server using our API route (avoids large client payloads)
     const headersList = request.headers;
@@ -41,21 +60,17 @@ export async function POST(request) {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #009688;">Booking Confirmation</h1>
-          <p>Dear ${bookingData.guestName},</p>
+          <p>Dear ${safeGuestName},</p>
           <p>Thank you for booking with us! Your reservation has been confirmed.</p>
 
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 5px; margin: 20px 0;">
             <h2 style="color: #009688; margin-top: 0;">Booking Details</h2>
-            <p><strong>Hotel:</strong> ${bookingData.hotelName}</p>
-            <p><strong>Check-in:</strong> ${new Date(
-              bookingData.checkin
-            ).toLocaleDateString()}</p>
-            <p><strong>Check-out:</strong> ${new Date(
-              bookingData.checkout
-            ).toLocaleDateString()}</p>
-            <p><strong>Guests:</strong> ${bookingData.guests}</p>
-            <p><strong>Total Amount:</strong> $${bookingData.totalPrice}</p>
-            <p><strong>Booking ID:</strong> ${bookingData.bookingId.toUpperCase()}</p>
+            <p><strong>Hotel:</strong> ${safeHotelName}</p>
+            <p><strong>Check-in:</strong> ${safeCheckin}</p>
+            <p><strong>Check-out:</strong> ${safeCheckout}</p>
+            <p><strong>Guests:</strong> ${safeGuests}</p>
+            <p><strong>Total Amount:</strong> $${safeTotalPrice}</p>
+            <p><strong>Booking ID:</strong> ${safeBookingId}</p>
           </div>
 
           <p>Your booking receipt is attached to this email.</p>
@@ -71,7 +86,7 @@ export async function POST(request) {
       `,
       attachments: [
         {
-          filename: `booking-${bookingData.bookingId}.pdf`,
+          filename: `booking-${safeBookingId}.pdf`,
           content: pdfBuffer,
           contentType: "application/pdf",
         },
