@@ -16,8 +16,9 @@ updates:
         update-types:
           - minor
           - patch
-      major:
-        patterns:
-          - "*"
+    # Major upgrades need migrations (e.g. Tailwind 4 config, MongoDB 7 vs
+    # @auth/mongodb-adapter peer range), so handle them as deliberate PRs.
+    ignore:
+      - dependency-name: "*"
         update-types:
-          - major
+          - version-update:semver-major
