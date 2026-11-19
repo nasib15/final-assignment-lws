@@ -12,9 +12,12 @@ import {
 import differenceInDays from "@/utils/getDifferenceInDays";
 import { notFound } from "next/navigation";
 
-const SuccessPage = async ({ params: { id }, searchParams }) => {
+const SuccessPage = async ({ params, searchParams }) => {
+  // Next.js 16 exposes request-time APIs as Promises.
+  const { id } = await params;
+  const resolvedSearchParams = await searchParams;
   const hotelDetails = await getHotelById(id);
-  const { checkin, checkout, guests, bookedAt } = searchParams;
+  const { checkin, checkout, guests, bookedAt } = resolvedSearchParams;
 
   const session = await auth();
   const authUser = session?.user;
@@ -44,7 +47,7 @@ const SuccessPage = async ({ params: { id }, searchParams }) => {
     nights: differenceInDays(new Date(checkout), new Date(checkin)),
     guests: Number(guests),
     pricePerNight: Number(hotelDetails?.pricePerNight),
-    totalPrice: Number(searchParams?.totalPrice),
+    totalPrice: Number(resolvedSearchParams?.totalPrice),
     bookingId,
     billingAddress: {
       streetAddress: paymentDetails?.streetAddress,
@@ -86,7 +89,8 @@ export default SuccessPage;
 
 // generate metadata
 
-export async function generateMetadata({ params: { id } }) {
+export async function generateMetadata({ params }) {
+  const { id } = await params;
   const hotelDetails = await getHotelById(id);
 
   return {

@@ -3,7 +3,9 @@ import chromium from "@sparticuz/chromium";
 import { NextResponse } from "next/server";
 import puppeteer from "puppeteer-core";
 
-export const runtime = "edge";
+// Puppeteer and @sparticuz/chromium rely on Node.js native modules, which are
+// not available in the Edge Runtime (deprecated in Next.js 16).
+export const runtime = "nodejs";
 
 export async function POST(request) {
   try {

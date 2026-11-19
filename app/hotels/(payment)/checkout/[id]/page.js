@@ -15,7 +15,10 @@ import { getAvgRating } from "@/utils/getAvgRating";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-const PaymentPage = async ({ params: { id }, searchParams }) => {
+const PaymentPage = async ({ params, searchParams }) => {
+  // Next.js 16 exposes request-time APIs as Promises.
+  const { id } = await params;
+  const resolvedSearchParams = await searchParams;
   const hotelDetails = await getHotelById(id);
   const session = await auth();
   const authUser = session?.user;
@@ -30,7 +33,8 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
   }
 
   const { name, thumbNailUrl } = hotelDetails;
-  const { checkin, checkout, guests, totalPrice, bookedAt } = searchParams;
+  const { checkin, checkout, guests, totalPrice, bookedAt } =
+    resolvedSearchParams;
 
   // get booking id
   const bookingId = await findBookingId(id, authUserId, bookedAt);
@@ -97,7 +101,8 @@ const PaymentPage = async ({ params: { id }, searchParams }) => {
 export default PaymentPage;
 
 // generate dynamic metadata
-export async function generateMetadata({ params: { id } }) {
+export async function generateMetadata({ params }) {
+  const { id } = await params;
   const hotelDetails = await getHotelById(id);
 
   return {
