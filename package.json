@@ -6,25 +6,26 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "push": "git push -u origin main && git push -u assignment main"
   },
   "dependencies": {
-    "@auth/mongodb-adapter": "^3.7.4",
+    "@auth/mongodb-adapter": "^3.11.3",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-slot": "^1.1.1",
     "@sparticuz/chromium": "^138.0.2",
+    "basic-ftp": "^6.2.6",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.469.0",
     "mongodb": "^6.12.0",
-    "mongoose": "^8.9.2",
-    "next": "16.2.2",
-    "next-auth": "^5.0.0-beta.30",
-    "nodemailer": "^8.0.4",
-    "puppeteer-core": "^24.17.1",
+    "mongoose": "^9.12.2",
+    "next": "16.4.6",
+    "next-auth": "5.0.0-beta.32",
+    "nodemailer": "^10.6.0",
+    "puppeteer-core": "^25.18.1",
     "react": "^18",
     "react-date-range": "^2.0.1",
     "react-dom": "^18",
@@ -33,9 +34,10 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "eslint": "^8",
-    "eslint-config-next": "16.2.2",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "16.4.6",
     "postcss": "^8",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.9.3"
   }
 }

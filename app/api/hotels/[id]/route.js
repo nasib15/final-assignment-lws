@@ -4,13 +4,14 @@ import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
   try {
+    const { id } = await params;
     const session = await auth();
 
     if (!session) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const hotelData = await getHotelById(params.id);
+    const hotelData = await getHotelById(id);
 
     if (!hotelData) {
       return new NextResponse("Hotel not found", { status: 404 });
@@ -34,6 +35,7 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   try {
+    const { id } = await params;
     const session = await auth();
     if (!session) {
       return new NextResponse("Unauthorized", { status: 401 });
@@ -42,7 +44,7 @@ export async function PUT(req, { params }) {
     const hotelData = await req.json();
 
     // Update hotel in database
-    await updateHotel(params.id, hotelData);
+    await updateHotel(id, hotelData);
 
     return NextResponse.json({
       success: true,
