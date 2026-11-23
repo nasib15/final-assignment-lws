@@ -34,7 +34,7 @@
     "react-date-range": "^2.0.1",
     "react-dom": "^18",
     "react-hot-toast": "^2.6.1",
-    "tailwind-merge": "^2.6.1",
+    "tailwind-merge": "^2.6.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
